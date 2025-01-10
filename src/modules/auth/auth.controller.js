@@ -12,6 +12,10 @@ exports.signup = async (req, res) => {
     if (error) {
       return responseHandler(res, 400, `Invalid input: ${error.message}`);
     }
+
+    const findUser = await User.findOne({ email: req.body.email });
+    if (findUser) return responseHandler(res, 400, "Failure");
+
     req.body.role = "admin";
     req.body.password = await hashPassword(req.body.password, 10);
     const user = await User.create(req.body);
