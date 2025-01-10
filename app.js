@@ -7,6 +7,7 @@ const responseHandler = require("./src/helpers/responseHandler");
 const userRoutes = require("./src/modules/user/user.routes");
 const authRoutes = require("./src/modules/auth/auth.routes");
 const churchRoutes = require("./src/modules/church/church.routes");
+const plansRoutes = require("./src/modules/plan/plan.routes");
 
 //! Create an instance of the Express application
 const app = express();
@@ -36,6 +37,7 @@ app.get(BASE_PATH, (req, res) => {
 app.use(`${BASE_PATH}/users`, userRoutes);
 app.use(`${BASE_PATH}/auth`, authRoutes);
 app.use(`${BASE_PATH}/church`, churchRoutes);
+app.use(`${BASE_PATH}/plans`, plansRoutes);
 
 app.all("*", (req, res) => {
   return responseHandler(res, 404, "No API Found..!");
