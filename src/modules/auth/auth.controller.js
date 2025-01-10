@@ -1,3 +1,4 @@
+const responseHandler = require("../../helpers/responseHandler");
 const User = require("../../models/userModel");
 const { hashPassword, comparePasswords } = require("../../utils/bcrypt");
 const { generateToken } = require("../../utils/generateToken");
@@ -5,7 +6,7 @@ const validation = require("../../validations");
 
 exports.signup = async (req, res) => {
   try {
-    const { error } = validation.createUser.validate(req.body, {
+    const { error } = validation.signup.validate(req.body, {
       abortEarly: true,
     });
     if (error) {
@@ -29,7 +30,7 @@ exports.login = async (req, res) => {
       return responseHandler(res, 400, `Invalid input: ${error.message}`);
     }
     const { email, password } = req.body;
-    const user = await User.findOne({ email, password });
+    const user = await User.findOne({ email });
     const comparePassword = await comparePasswords(password, user.password);
     if (!comparePassword) {
       return responseHandler(res, 401, "Invalid password");
