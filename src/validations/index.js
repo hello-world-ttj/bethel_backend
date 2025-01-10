@@ -30,3 +30,41 @@ exports.login = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
 });
+
+exports.createChurch = Joi.object({
+  name: Joi.string().required(),
+  image: Joi.string(),
+  address: Joi.string().required(),
+});
+
+exports.updateChurch = Joi.object({
+  name: Joi.string(),
+  image: Joi.string(),
+  address: Joi.string(),
+});
+
+exports.createPlan = Joi.object({
+  name: Joi.string().required(),
+  price: Joi.number().required(),
+  days: Joi.number().required(),
+});
+
+exports.updatePlan = Joi.object({
+  name: Joi.string(),
+  price: Joi.number(),
+  days: Joi.number(),
+  status: Joi.string(),
+});
+
+exports.createSubscription = Joi.object({
+  plan: Joi.string().required(),
+  user: Joi.string().required(),
+  expiryDate: Joi.date().required(),
+});
+
+exports.updateSubscription = Joi.object({
+  plan: Joi.string(),
+  user: Joi.string(),
+  expiryDate: Joi.date(),
+  status: Joi.string(),
+});
