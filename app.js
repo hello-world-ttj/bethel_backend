@@ -9,6 +9,7 @@ const userRoutes = require("./src/modules/user/user.routes");
 const authRoutes = require("./src/modules/auth/auth.routes");
 const churchRoutes = require("./src/modules/church/church.routes");
 const plansRoutes = require("./src/modules/plan/plan.routes");
+const twilioRoutes = require("./src/modules/twilio/twilio.routes");
 const subscriptionRoutes = require("./src/modules/subscription/subscription.routes");
 
 //! Create an instance of the Express application
@@ -41,6 +42,7 @@ app.use(`${BASE_PATH}/auth`, authRoutes);
 app.use(`${BASE_PATH}/church`, churchRoutes);
 app.use(`${BASE_PATH}/plans`, plansRoutes);
 app.use(`${BASE_PATH}/subscription`, subscriptionRoutes);
+app.use(`${BASE_PATH}/twilio`, twilioRoutes);
 
 //* Serve static files (e.g., PDFs) from the 'public' folder
 app.use("/public", express.static(path.join(__dirname, "public")));

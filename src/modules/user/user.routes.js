@@ -5,6 +5,8 @@ const {
   createUser,
   updateUser,
   deleteUser,
+  sendSMS,
+  checkBalance,
 } = require("./user.controller");
 const authVerify = require("../../middlewares/authVerify");
 const router = express.Router();
