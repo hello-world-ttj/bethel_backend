@@ -2,6 +2,9 @@ const responseHandler = require("../../helpers/responseHandler");
 const Plan = require("../../models/planModel");
 const Subscription = require("../../models/subscriptionModel");
 const validation = require("../../validations");
+const PDFDocument = require("pdfkit");
+const fs = require("fs");
+const path = require("path");
 
 exports.createSub = async (req, res) => {
   try {
@@ -103,5 +106,81 @@ exports.getSubs = async (req, res) => {
     return responseHandler(res, 200, "Success", subs, totalCount);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);
+  }
+};
+
+exports.getSubsUsers = async (req, res) => {
+  try {
+    const subs = await Subscription.find({ status: "active" }).populate(
+      "user",
+      "name address"
+    );
+
+    const users = Array(30)
+      .fill(subs[0])
+      .map((sub, index) => ({
+        name: `${sub.user.name} ${index + 1}`,
+        address: sub.user.address,
+      }));
+
+    const publicDir = path.join(__dirname, "../../../public");
+    if (!fs.existsSync(publicDir)) {
+      fs.mkdirSync(publicDir);
+    }
+
+    const doc = new PDFDocument({ size: "A4", margin: 20 });
+    const filename = `labels-${Date.now()}.pdf`;
+    const filePath = path.join(publicDir, filename);
+    const stream = fs.createWriteStream(filePath);
+    doc.pipe(stream);
+
+    const columns = 3;
+    const rows = 8;
+    const labelWidth = (doc.page.width - doc.options.margin * 2) / columns;
+    const labelHeight = (doc.page.height - doc.options.margin * 2) / rows;
+    const padding = 5;
+
+    let userIndex = 0;
+
+    while (userIndex < users.length) {
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < columns; col++) {
+          if (userIndex >= users.length) break;
+
+          const { name, address } = users[userIndex];
+
+          const nameUppercase = name.toUpperCase();
+          const addressUppercase = address.toUpperCase();
+
+          const x = doc.options.margin + col * labelWidth;
+          const y = doc.options.margin + row * labelHeight;
+
+          doc.rect(x, y, labelWidth, labelHeight).stroke();
+          doc.text(`${nameUppercase}`, x + padding, y + padding, {
+            width: labelWidth - padding * 2,
+            align: "left",
+          });
+          doc.text(`${addressUppercase}`, x + padding, y + 20, {
+            width: labelWidth - padding * 2,
+            align: "left",
+          });
+
+          userIndex++;
+        }
+      }
+
+      if (userIndex < users.length) doc.addPage();
+    }
+
+    doc.end();
+
+    stream.on("finish", () => {
+      const pdfUrl = `${req.protocol}://${req.get("host")}/public/${filename}`;
+      return responseHandler(res, 200, "PDF generated successfully", {
+        pdfUrl,
+      });
+    });
+  } catch (error) {
+    return responseHandler(res, 500, `Internal Server Error: ${error.message}`);
   }
 };

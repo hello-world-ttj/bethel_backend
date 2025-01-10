@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const volleyball = require("volleyball");
 const clc = require("cli-color");
+const path = require("path");
 const responseHandler = require("./src/helpers/responseHandler");
 const userRoutes = require("./src/modules/user/user.routes");
 const authRoutes = require("./src/modules/auth/auth.routes");
@@ -40,6 +41,9 @@ app.use(`${BASE_PATH}/auth`, authRoutes);
 app.use(`${BASE_PATH}/church`, churchRoutes);
 app.use(`${BASE_PATH}/plans`, plansRoutes);
 app.use(`${BASE_PATH}/subscription`, subscriptionRoutes);
+
+//* Serve static files (e.g., PDFs) from the 'public' folder
+app.use("/public", express.static(path.join(__dirname, "public")));
 
 app.all("*", (req, res) => {
   return responseHandler(res, 404, "No API Found..!");
