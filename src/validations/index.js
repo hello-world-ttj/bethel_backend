@@ -60,6 +60,7 @@ exports.createSubscription = Joi.object({
   plan: Joi.string().required(),
   user: Joi.string().required(),
   expiryDate: Joi.date(),
+  receipt: Joi.string().required(),
 });
 
 exports.updateSubscription = Joi.object({
@@ -67,4 +68,5 @@ exports.updateSubscription = Joi.object({
   user: Joi.string(),
   expiryDate: Joi.date(),
   status: Joi.string(),
+  receipt: Joi.string(),
 });

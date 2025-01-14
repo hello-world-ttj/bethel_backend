@@ -10,6 +10,7 @@ const subscriptionSchema = mongoose.Schema(
     },
     expiryDate: { type: Date },
     plan: { type: mongoose.Schema.Types.ObjectId, ref: "Plan" },
+    receipt: { type: String },
   },
   { timestamps: true }
 );
