@@ -25,7 +25,14 @@ exports.dashboard = async (req, res) => {
       Plan.countDocuments({ status: "active" }),
       Subscription.countDocuments({ status: "active" }),
       Subscription.find({ status: "active" })
-        .populate("user", "name")
+        .populate({
+          path: "user",
+          select: "name",
+          populate: {
+            path: "church",
+            select: "name",
+          },
+        })
         .populate("plan", "name")
         .skip(skipCount)
         .limit(limit)
