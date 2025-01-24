@@ -19,10 +19,12 @@ exports.getUsers = async (req, res) => {
       filter.$or = [
         { name: { $regex: search, $options: "i" } },
         { phone: { $regex: search, $options: "i" } },
+        { "church.name": { $regex: search, $options: "i" } },
       ];
     }
 
     const users = await User.find(filter)
+      .populate("church", "name")
       .skip(skipCount)
       .limit(limit)
       .sort({ createdAt: -1 });
