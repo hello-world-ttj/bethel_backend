@@ -47,7 +47,9 @@ exports.createSub = async (req, res) => {
 };
 exports.getSub = async (req, res) => {
   try {
-    const sub = await Subscription.findById(req.params.id);
+    const sub = await Subscription.findById(req.params.id)
+      .populate("user", "name")
+      .populate("plan", "name");
     return responseHandler(res, 200, "Success", sub);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);
@@ -97,6 +99,8 @@ exports.getSubs = async (req, res) => {
     }
 
     const subs = await Subscription.find(filter)
+      .populate("user", "name")
+      .populate("plan", "name")
       .skip(skipCount)
       .limit(limit)
       .sort({ createdAt: -1 });
