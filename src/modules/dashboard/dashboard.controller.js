@@ -10,20 +10,28 @@ exports.dashboard = async (req, res) => {
 
     const skipCount = 10 * (page - 1);
 
-    const [activeUsers, users, churches, plans, subscriptions, subsList] =
-      await Promise.all([
-        User.countDocuments({ status: "active", role: "user" }),
-        User.countDocuments({ role: "user" }),
-        Church.countDocuments(),
-        Plan.countDocuments({ status: "active" }),
-        Subscription.countDocuments({ status: "active" }),
-        Subscription.find({ status: "active" })
-          .populate("user", "name")
-          .populate("plan", "name")
-          .skip(skipCount)
-          .limit(limit)
-          .sort({ createdAt: -1 }),
-      ]);
+    const [
+      activeUsers,
+      users,
+      churches,
+      plans,
+      subscriptions,
+      subsList,
+      subsListCount,
+    ] = await Promise.all([
+      User.countDocuments({ status: "active", role: "user" }),
+      User.countDocuments({ role: "user" }),
+      Church.countDocuments(),
+      Plan.countDocuments({ status: "active" }),
+      Subscription.countDocuments({ status: "active" }),
+      Subscription.find({ status: "active" })
+        .populate("user", "name")
+        .populate("plan", "name")
+        .skip(skipCount)
+        .limit(limit)
+        .sort({ createdAt: -1 }),
+      Subscription.countDocuments({ status: "active" }),
+    ]);
 
     return responseHandler(res, 200, "Success", {
       activeUsers,
@@ -32,6 +40,7 @@ exports.dashboard = async (req, res) => {
       plans,
       subscriptions,
       subsList,
+      subsListCount,
     });
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error: ${error.message}`);

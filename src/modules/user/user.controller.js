@@ -36,6 +36,38 @@ exports.getUsers = async (req, res) => {
   }
 };
 
+exports.getUsersByChurch = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { page = 1, limit = 10, search } = req.query;
+
+    const skipCount = 10 * (page - 1);
+    const filter = {
+      role: "user",
+      church: id,
+    };
+
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { phone: { $regex: search, $options: "i" } },
+        { "church.name": { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const users = await User.find(filter)
+      .populate("church", "name")
+      .skip(skipCount)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    const totalCount = await User.find(filter).countDocuments();
+    return responseHandler(res, 200, "Success", users, totalCount);
+  } catch (error) {
+    return responseHandler(res, 500, `Internal Server Error ${error.message}`);
+  }
+};
+
 exports.createUser = async (req, res) => {
   try {
     const { error } = validation.createUser.validate(req.body, {
