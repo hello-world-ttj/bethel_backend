@@ -16,7 +16,7 @@ exports.createSub = async (req, res) => {
       return responseHandler(res, 400, `Invalid input: ${error.message}`);
     }
 
-    const { user, plan: planId } = req.body;
+    const { user, plan: planId, receipt } = req.body;
 
     const plan = await Plan.findById(planId);
     if (!plan) {
@@ -41,6 +41,7 @@ exports.createSub = async (req, res) => {
       user,
       plan: planId,
       expiryDate,
+      receipt
     });
 
     await User.findByIdAndUpdate(user, { status: "active" });
