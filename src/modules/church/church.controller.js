@@ -30,8 +30,13 @@ exports.getChurches = async (req, res) => {
         { address: { $regex: search, $options: "i" } },
       ];
     }
+    let churches;
 
-    const churches = await Church.find(filter)
+    if (limit === "all") {
+      churches = await Church.find(filter).sort({ createdAt: -1 });
+    }
+
+    churches = await Church.find(filter)
       .skip(skipCount)
       .limit(limit)
       .sort({ createdAt: -1 });

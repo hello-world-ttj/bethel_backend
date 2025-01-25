@@ -55,7 +55,13 @@ exports.getUsersByChurch = async (req, res) => {
       ];
     }
 
-    const users = await User.find(filter)
+    let users;
+
+    if (limit === "all") {
+      users = await User.find(filter).sort({ createdAt: -1 });
+    }
+
+    users = await User.find(filter)
       .populate("church", "name")
       .skip(skipCount)
       .limit(limit)
