@@ -41,7 +41,7 @@ exports.createSub = async (req, res) => {
       user,
       plan: planId,
       expiryDate,
-      receipt
+      receipt,
     });
 
     await User.findByIdAndUpdate(user, { status: "active" });
@@ -98,7 +98,7 @@ exports.getSubs = async (req, res) => {
     const filter = {};
 
     if (search) {
-      filter.status = { $regex: search, $options: "i" };
+      filter.$or = [{ "user.name": { $regex: search, $options: "i" } }];
     }
 
     if (status) {
