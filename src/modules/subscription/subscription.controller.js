@@ -92,27 +92,60 @@ exports.deleteSub = async (req, res) => {
 exports.getSubs = async (req, res) => {
   try {
     const { page = 1, limit = 10, search, status } = req.query;
-
     const skipCount = 10 * (page - 1);
 
-    const filter = {};
+    const match = {};
 
     if (search) {
-      filter.$or = [{ "user.name": { $regex: search, $options: "i" } }];
+      match.$or = [
+        { "user.name": { $regex: search, $options: "i" } },
+        { receipt: { $regex: search, $options: "i" } },
+      ];
     }
 
     if (status) {
-      filter.status = status;
+      match.status = status;
     }
 
-    const subs = await Subscription.find(filter)
-      .populate("user", "name")
-      .populate("plan", "name")
-      .skip(skipCount)
-      .limit(limit)
-      .sort({ createdAt: -1 });
+    const subs = await Subscription.aggregate([
+      { $match: match },
+      { $skip: skipCount },
+      { $limit: limit },
+      { $sort: { createdAt: -1 } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "user",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" },
+      {
+        $lookup: {
+          from: "plans",
+          localField: "plan",
+          foreignField: "_id",
+          as: "plan",
+        },
+      },
+      { $unwind: "$plan" },
+      {
+        $project: {
+          "user._id": 1,
+          "user.name": 1,
+          "plan._id": 1,
+          "plan.name": 1,
+          expiryDate: 1,
+          receipt: 1,
+          status: 1,
+          createdAt: 1,
+          updatedAt: 1,
+        },
+      },
+    ]);
 
-    const totalCount = await Subscription.find(filter).countDocuments();
+    const totalCount = await Subscription.countDocuments(match);
 
     return responseHandler(res, 200, "Success", subs, totalCount);
   } catch (error) {
