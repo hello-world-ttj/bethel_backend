@@ -12,8 +12,8 @@ const userSchema = mongoose.Schema(
     phone: { type: String, trim: true },
     status: {
       type: String,
-      enum: ["active", "inactive", "subscription_expired"],
-      default: "active",
+      enum: ["active", "inactive", "expiring", "expired"],
+      default: "inactive",
     },
     address: { type: String, trim: true },
     password: { type: String, trim: true },

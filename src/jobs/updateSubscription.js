@@ -29,7 +29,7 @@ cron.schedule("0 0 * * *", async () => {
       subscription.status = "expired";
       await User.findByIdAndUpdate(
         subscription.user._id,
-        { status: "subscription_expired" },
+        { status: "expired" },
         { new: true }
       );
       await subscription.save();
@@ -42,6 +42,11 @@ cron.schedule("0 0 * * *", async () => {
 
     for (const subscription of expiringSubscriptions) {
       subscription.status = "expiring";
+      await User.findByIdAndUpdate(
+        subscription.user._id,
+        { status: "expiring" },
+        { new: true }
+      );
       await subscription.save();
       await client.messages.create({
         body: "Your Bethel Patrika subscription is expiring in 1 month, please renew your subscription.",

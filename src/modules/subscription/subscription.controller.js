@@ -5,6 +5,7 @@ const validation = require("../../validations");
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
 const path = require("path");
+const User = require("../../models/userModel");
 
 exports.createSub = async (req, res) => {
   try {
@@ -41,6 +42,8 @@ exports.createSub = async (req, res) => {
       plan: planId,
       expiryDate,
     });
+
+    await User.findByIdAndUpdate(user, { status: "active" });
 
     return responseHandler(res, 201, "Success", newSub);
   } catch (error) {
