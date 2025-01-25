@@ -25,7 +25,7 @@ exports.getPlans = async (req, res) => {
     const filter = {};
 
     if (search) {
-      filter.name = { $regex: search, $options: "i" };
+      filter.$or = [{ name: { $regex: search, $options: "i" } }];
     }
 
     const plans = await Plan.find(filter)
