@@ -27,8 +27,10 @@ exports.createSub = async (req, res) => {
     });
 
     let expiryDate;
-    if (latestSub) {
+    if (latestSub && latestSub.status !== "expired") {
       expiryDate = new Date(latestSub.expiryDate);
+      latestSub.status = "expired";
+      await latestSub.save();
     } else {
       expiryDate = new Date();
     }
