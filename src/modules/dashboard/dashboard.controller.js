@@ -1,8 +1,11 @@
+require("dotenv").config();
 const responseHandler = require("../../helpers/responseHandler");
 const Church = require("../../models/churchModel");
 const Plan = require("../../models/planModel");
 const Subscription = require("../../models/subscriptionModel");
 const User = require("../../models/userModel");
+const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN } = process.env;
+const client = require("twilio")(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
 exports.dashboard = async (req, res) => {
   try {
@@ -15,7 +18,7 @@ exports.dashboard = async (req, res) => {
       users,
       churches,
       plans,
-      subscriptions,
+      twilioBalance,
       subsList,
       subsListCount,
     ] = await Promise.all([
@@ -23,7 +26,7 @@ exports.dashboard = async (req, res) => {
       User.countDocuments({ role: "user" }),
       Church.countDocuments(),
       Plan.countDocuments({ status: "active" }),
-      Subscription.countDocuments({ status: "active" }),
+      client.balance.fetch(),
       Subscription.find({ status: "active" })
         .populate({
           path: "user",
@@ -45,7 +48,7 @@ exports.dashboard = async (req, res) => {
       users,
       churches,
       plans,
-      subscriptions,
+      twilioBalance: Number(twilioBalance.balance).toFixed(2),
       subsList,
       subsListCount,
     });
