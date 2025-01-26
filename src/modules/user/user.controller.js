@@ -39,13 +39,17 @@ exports.getUsers = async (req, res) => {
 exports.getUsersByChurch = async (req, res) => {
   try {
     const { id } = req.params;
-    const { page = 1, limit = 10, search } = req.query;
+    const { page = 1, limit = 10, search, status } = req.query;
 
     const skipCount = 10 * (page - 1);
     const filter = {
       role: "user",
       church: id,
     };
+
+    if (status) {
+      filter.status = status;
+    }
 
     if (search) {
       filter.$or = [
