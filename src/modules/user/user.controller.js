@@ -6,7 +6,7 @@ exports.getUsers = async (req, res) => {
   try {
     const { page = 1, status, limit = 10, search } = req.query;
 
-    const skipCount = 10 * (page - 1);
+    const skipCount = limit * (page - 1);
     const filter = {
       role: "user",
     };
@@ -41,7 +41,7 @@ exports.getUsersByChurch = async (req, res) => {
     const { id } = req.params;
     const { page = 1, limit = 10, search, status, church } = req.query;
 
-    const skipCount = 10 * (page - 1);
+    const skipCount = limit * (page - 1);
     const filter = {
       role: "user",
       church: id,

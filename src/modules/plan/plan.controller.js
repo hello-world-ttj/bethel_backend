@@ -20,7 +20,7 @@ exports.createPlan = async (req, res) => {
 exports.getPlans = async (req, res) => {
   try {
     const { page = 1, limit = 10, search } = req.query;
-    const skipCount = 10 * (page - 1);
+    const skipCount = limit * (page - 1);
 
     const filter = {};
 

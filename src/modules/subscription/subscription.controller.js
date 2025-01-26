@@ -92,7 +92,7 @@ exports.deleteSub = async (req, res) => {
 exports.getSubs = async (req, res) => {
   try {
     const { page = 1, limit = 10, search, status } = req.query;
-    const skipCount = 10 * (page - 1);
+    const skipCount = limit * (page - 1);
 
     const match = {};
 
