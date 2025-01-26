@@ -109,7 +109,7 @@ exports.getSubs = async (req, res) => {
 
     const subs = await Subscription.aggregate([
       { $skip: skipCount },
-      { $limit: limit },
+      { $limit: Number(limit) },
       { $sort: { createdAt: -1 } },
       {
         $lookup: {
