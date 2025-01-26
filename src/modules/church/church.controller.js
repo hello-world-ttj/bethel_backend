@@ -19,7 +19,7 @@ exports.createChurch = async (req, res) => {
 
 exports.getChurches = async (req, res) => {
   try {
-    let { page = 1, limit = 10, search } = req.query;
+    const { page = 1, limit = 10, search, church } = req.query;
 
     const skipCount = 10 * (page - 1);
     const filter = {};
@@ -32,10 +32,9 @@ exports.getChurches = async (req, res) => {
     }
     let churches;
 
-    if (limit === "all") {
+    if (church === "all") {
       churches = await Church.find(filter).sort({ createdAt: -1 });
     } else {
-      limit = parseInt(limit);
       churches = await Church.find(filter)
         .skip(skipCount)
         .limit(limit)
