@@ -34,12 +34,12 @@ exports.getChurches = async (req, res) => {
 
     if (limit === "all") {
       churches = await Church.find(filter).sort({ createdAt: -1 });
+    } else {
+      churches = await Church.find(filter)
+        .skip(skipCount)
+        .limit(limit)
+        .sort({ createdAt: -1 });
     }
-
-    churches = await Church.find(filter)
-      .skip(skipCount)
-      .limit(limit)
-      .sort({ createdAt: -1 });
 
     const totalCount = await Church.find(filter).countDocuments();
     return responseHandler(res, 200, "Success", churches, totalCount);
