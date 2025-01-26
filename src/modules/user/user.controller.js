@@ -39,7 +39,7 @@ exports.getUsers = async (req, res) => {
 exports.getUsersByChurch = async (req, res) => {
   try {
     const { id } = req.params;
-    const { page = 1, limit = 10, search, status } = req.query;
+    let { page = 1, limit = 10, search, status } = req.query;
 
     const skipCount = 10 * (page - 1);
     const filter = {
@@ -64,6 +64,7 @@ exports.getUsersByChurch = async (req, res) => {
     if (limit === "all") {
       users = await User.find(filter).sort({ createdAt: -1 });
     } else {
+      limit = parseInt(limit);
       users = await User.find(filter)
         .populate("church", "name")
         .skip(skipCount)
