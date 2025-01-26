@@ -54,7 +54,7 @@ exports.createSub = async (req, res) => {
 exports.getSub = async (req, res) => {
   try {
     const sub = await Subscription.findById(req.params.id)
-      .populate("user", "name")
+      .populate("user", "name church")
       .populate("plan", "name");
     return responseHandler(res, 200, "Success", sub);
   } catch (error) {
