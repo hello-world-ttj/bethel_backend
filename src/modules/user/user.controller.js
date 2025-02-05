@@ -62,7 +62,7 @@ exports.getUsersByChurch = async (req, res) => {
     let users;
 
     if (church === "all") {
-      users = await User.find(filter).sort({ createdAt: -1 });
+      users = await User.find(filter).sort({ createdAt: -1 }).populate("church", "name");
     } else {
       users = await User.find(filter)
         .populate("church", "name")
