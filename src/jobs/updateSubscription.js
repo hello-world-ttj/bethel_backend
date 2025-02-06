@@ -33,11 +33,11 @@ cron.schedule("0 0 * * *", async () => {
         { new: true }
       );
       await subscription.save();
-      await client.messages.create({
-        body: "Your Bethel Patrika subscription has expired. Please renew your subscription.",
-        messagingServiceSid: TWILIO_SERVICE_SID,
-        to: subscription.user.phone,
-      });
+      // await client.messages.create({
+      //   body: "Your Bethel Patrika subscription has expired. Please renew your subscription.",
+      //   messagingServiceSid: TWILIO_SERVICE_SID,
+      //   to: subscription.user.phone,
+      // });
     }
 
     for (const subscription of expiringSubscriptions) {
@@ -48,11 +48,11 @@ cron.schedule("0 0 * * *", async () => {
         { new: true }
       );
       await subscription.save();
-      await client.messages.create({
-        body: "Your Bethel Patrika subscription is expiring in 1 month, please renew your subscription.",
-        messagingServiceSid: TWILIO_SERVICE_SID,
-        to: subscription.user.phone,
-      });
+      // await client.messages.create({
+      //   body: "Your Bethel Patrika subscription is expiring in 1 month, please renew your subscription.",
+      //   messagingServiceSid: TWILIO_SERVICE_SID,
+      //   to: subscription.user.phone,
+      // });
     }
   } catch (err) {
     console.error("Error updating subscriptions:", err);
