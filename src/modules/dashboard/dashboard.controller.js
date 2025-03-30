@@ -4,8 +4,6 @@ const Church = require("../../models/churchModel");
 const Plan = require("../../models/planModel");
 const Subscription = require("../../models/subscriptionModel");
 const User = require("../../models/userModel");
-const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN } = process.env;
-const client = require("twilio")(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
 exports.dashboard = async (req, res) => {
   try {
