@@ -18,7 +18,6 @@ exports.dashboard = async (req, res) => {
       users,
       churches,
       plans,
-      twilioBalance,
       subsList,
       subsListCount,
     ] = await Promise.all([
@@ -26,7 +25,6 @@ exports.dashboard = async (req, res) => {
       User.countDocuments({ role: "user" }),
       Church.countDocuments(),
       Plan.countDocuments({ status: "active" }),
-      client.balance.fetch(),
       Subscription.find({ status: "active" })
         .populate({
           path: "user",
@@ -48,7 +46,6 @@ exports.dashboard = async (req, res) => {
       users,
       churches,
       plans,
-      twilioBalance: Number(twilioBalance.balance).toFixed(2),
       subsList,
       subsListCount,
     });
