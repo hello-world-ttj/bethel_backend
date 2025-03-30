@@ -16,6 +16,7 @@ const userSchema = mongoose.Schema(
       default: "inactive",
     },
     address: { type: String, trim: true },
+    pincode: { type: String, trim: true },
     password: { type: String, trim: true },
     role: {
       type: String,
