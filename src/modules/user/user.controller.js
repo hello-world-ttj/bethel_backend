@@ -1,3 +1,4 @@
+const { clearCacheByPattern } = require("../../helpers/cacheUtils");
 const responseHandler = require("../../helpers/responseHandler");
 const User = require("../../models/userModel");
 const validation = require("../../validations");
@@ -19,6 +20,7 @@ exports.getUsers = async (req, res) => {
       filter.$or = [
         { name: { $regex: search, $options: "i" } },
         { phone: { $regex: search, $options: "i" } },
+        { address: { $regex: search, $options: "i" } },
         { "church.name": { $regex: search, $options: "i" } },
       ];
     }
@@ -62,7 +64,9 @@ exports.getUsersByChurch = async (req, res) => {
     let users;
 
     if (church === "all") {
-      users = await User.find(filter).sort({ createdAt: -1 }).populate("church", "name");
+      users = await User.find(filter)
+        .sort({ createdAt: -1 })
+        .populate("church", "name");
     } else {
       users = await User.find(filter)
         .populate("church", "name")
@@ -88,6 +92,7 @@ exports.createUser = async (req, res) => {
     }
     req.body.role = "user";
     const user = await User.create(req.body);
+    await clearCacheByPattern("/api/v1/users*");
     return responseHandler(res, 200, "Success", user);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);
@@ -105,6 +110,7 @@ exports.updateUser = async (req, res) => {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
+    await clearCacheByPattern("/api/v1/users*");
     return responseHandler(res, 200, "Success", user);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);
@@ -123,6 +129,7 @@ exports.getUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
+    await clearCacheByPattern("/api/v1/users*");
     return responseHandler(res, 200, "Success", user);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);

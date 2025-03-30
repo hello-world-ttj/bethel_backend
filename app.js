@@ -13,6 +13,8 @@ const twilioRoutes = require("./src/modules/twilio/twilio.routes");
 const subscriptionRoutes = require("./src/modules/subscription/subscription.routes");
 const backupRoutes = require("./src/modules/backup/backup.routes");
 const dashboardRoutes = require("./src/modules/dashboard/dashboard.routes");
+const { connectRedis } = require("./src/config/redisClient");
+const cacheMiddleware = require("./src/middlewares/cacheMiddleware");
 
 //! Create an instance of the Express application
 const app = express();
@@ -28,6 +30,8 @@ app.use(express.json());
 const BASE_PATH = `/api/${API_VERSION}`;
 //* Import database connection module
 require("./src/helpers/connection");
+//* Connect to Redis
+connectRedis();
 
 //? Define a route for the API root
 app.get(BASE_PATH, (req, res) => {
@@ -39,14 +43,64 @@ app.get(BASE_PATH, (req, res) => {
 });
 
 //* Configure routes for user API
-app.use(`${BASE_PATH}/users`, userRoutes);
+app.use(
+  `${BASE_PATH}/users`,
+  (req, res, next) => {
+    if (req.method === "GET") {
+      cacheMiddleware(req, res, next);
+    } else {
+      next();
+    }
+  },
+  userRoutes
+);
 app.use(`${BASE_PATH}/auth`, authRoutes);
-app.use(`${BASE_PATH}/church`, churchRoutes);
-app.use(`${BASE_PATH}/plans`, plansRoutes);
-app.use(`${BASE_PATH}/subscription`, subscriptionRoutes);
-app.use(`${BASE_PATH}/twilio`, twilioRoutes);
+app.use(
+  `${BASE_PATH}/church`,
+  (req, res, next) => {
+    if (req.method === "GET") {
+      cacheMiddleware(req, res, next);
+    } else {
+      next();
+    }
+  },
+  churchRoutes
+);
+app.use(
+  `${BASE_PATH}/plans`,
+  (req, res, next) => {
+    if (req.method === "GET") {
+      cacheMiddleware(req, res, next);
+    } else {
+      next();
+    }
+  },
+  plansRoutes
+);
+app.use(
+  `${BASE_PATH}/subscription`,
+  (req, res, next) => {
+    if (req.method === "GET") {
+      cacheMiddleware(req, res, next);
+    } else {
+      next();
+    }
+  },
+  subscriptionRoutes
+);
+// app.use(`${BASE_PATH}/twilio`, twilioRoutes);
 app.use(`${BASE_PATH}/backup`, backupRoutes);
-app.use(`${BASE_PATH}/dashboard`, dashboardRoutes);
+app.use(
+  `${BASE_PATH}/dashboard`,
+  (req, res, next) => {
+    if (req.method === "GET") {
+      cacheMiddleware(req, res, next);
+    } else {
+      next();
+    }
+  },
+  dashboardRoutes
+);
 
 //* Serve static files (e.g., PDFs) from the 'public' folder
 app.use("/public", express.static(path.join(__dirname, "public")));

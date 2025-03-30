@@ -134,6 +134,7 @@ exports.getSubs = async (req, res) => {
         $project: {
           "user._id": 1,
           "user.name": 1,
+          "user.phone": 1,
           "plan._id": 1,
           "plan.name": 1,
           expiryDate: 1,
