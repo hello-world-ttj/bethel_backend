@@ -45,3 +45,14 @@ exports.login = async (req, res) => {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);
   }
 };
+
+exports.profile = async (req, res) => {
+  try {
+    if (!req.user) {
+      return responseHandler(res, 401, "Unauthorized");
+    }
+    return responseHandler(res, 200, "Success", req.user);
+  } catch (error) {
+    return responseHandler(res, 500, `Internal Server Error ${error.message}`);
+  }
+};
