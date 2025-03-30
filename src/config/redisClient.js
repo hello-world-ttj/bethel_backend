@@ -3,10 +3,7 @@ const redis = require("redis");
 const clc = require("cli-color");
 
 const client = redis.createClient({
-  socket: {
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT,
-  },
+  url: process.env.REDIS_URL,
   retry_strategy: (options) => {
     console.log(clc.yellowBright(`🔄 Redis reconnecting...`));
     return Math.min(options.attempt * 100, 3000);
