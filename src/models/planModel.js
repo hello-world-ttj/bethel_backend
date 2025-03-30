@@ -14,6 +14,8 @@ const planSchema = mongoose.Schema(
   { timestamps: true }
 );
 
+planSchema.index({ name: 1 });
+
 const Plan = mongoose.model("Plan", planSchema);
 
 module.exports = Plan;

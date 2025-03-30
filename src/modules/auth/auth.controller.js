@@ -34,13 +34,13 @@ exports.login = async (req, res) => {
       return responseHandler(res, 400, `Invalid input: ${error.message}`);
     }
     const { email, password } = req.body;
-    const user = await User.findOne({ email }).select("-password");
+    const user = await User.findOne({ email, role: "admin" });
     const comparePassword = await comparePasswords(password, user.password);
     if (!comparePassword) {
       return responseHandler(res, 401, "Invalid password");
     }
     const token = generateToken(user._id);
-    return responseHandler(res, 200, "Success", { token, user });
+    return responseHandler(res, 200, "Success", token);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);
   }

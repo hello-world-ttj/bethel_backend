@@ -9,6 +9,8 @@ const churchSchema = mongoose.Schema(
   { timestamps: true }
 );
 
+churchSchema.index({ name: 1 });
+
 const Church = mongoose.model("Church", churchSchema);
 
 module.exports = Church;
