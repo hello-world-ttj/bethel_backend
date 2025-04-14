@@ -21,14 +21,13 @@ exports.updateUser = Joi.object({
 
 exports.signup = Joi.object({
   name: Joi.string().required(),
-  email: Joi.string().email().required(),
-  phone: Joi.string().required(),
+  email: Joi.string().required(),
   password: Joi.string().required(),
   image: Joi.string(),
 });
 
 exports.login = Joi.object({
-  email: Joi.string().email().required(),
+  email: Joi.string().required(),
   password: Joi.string().required(),
 });
 
