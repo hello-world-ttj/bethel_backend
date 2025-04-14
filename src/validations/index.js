@@ -2,6 +2,7 @@ const Joi = require("joi");
 
 exports.createUser = Joi.object({
   name: Joi.string().required(),
+  regNo: Joi.string().required(),
   church: Joi.string().required(),
   image: Joi.string(),
   email: Joi.string().email().required(),

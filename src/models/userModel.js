@@ -7,6 +7,7 @@ const userSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Church",
     },
+    regNo: { type: String, trim: true },
     image: { type: String },
     email: { type: String, trim: true },
     phone: { type: String, trim: true },

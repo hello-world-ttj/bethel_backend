@@ -42,65 +42,25 @@ app.get(BASE_PATH, (req, res) => {
   );
 });
 
+//* Routes with optional caching for GET
+const applyCacheIfGet = (route) => [
+  (req, res, next) => {
+    if (req.method === "GET") {
+      cacheMiddleware(req, res, next);
+    } else {
+      next();
+    }
+  },
+  route,
+];
 //* Configure routes for user API
-app.use(
-  `${BASE_PATH}/users`,
-  (req, res, next) => {
-    if (req.method === "GET") {
-      cacheMiddleware(req, res, next);
-    } else {
-      next();
-    }
-  },
-  userRoutes
-);
+app.use(`${BASE_PATH}/users`, ...applyCacheIfGet(userRoutes));
 app.use(`${BASE_PATH}/auth`, authRoutes);
-app.use(
-  `${BASE_PATH}/church`,
-  (req, res, next) => {
-    if (req.method === "GET") {
-      cacheMiddleware(req, res, next);
-    } else {
-      next();
-    }
-  },
-  churchRoutes
-);
-app.use(
-  `${BASE_PATH}/plans`,
-  (req, res, next) => {
-    if (req.method === "GET") {
-      cacheMiddleware(req, res, next);
-    } else {
-      next();
-    }
-  },
-  plansRoutes
-);
-app.use(
-  `${BASE_PATH}/subscription`,
-  (req, res, next) => {
-    if (req.method === "GET") {
-      cacheMiddleware(req, res, next);
-    } else {
-      next();
-    }
-  },
-  subscriptionRoutes
-);
-// app.use(`${BASE_PATH}/twilio`, twilioRoutes);
+app.use(`${BASE_PATH}/church`, ...applyCacheIfGet(churchRoutes));
+app.use(`${BASE_PATH}/plans`, ...applyCacheIfGet(plansRoutes));
+app.use(`${BASE_PATH}/subscription`, ...applyCacheIfGet(subscriptionRoutes));
 app.use(`${BASE_PATH}/backup`, backupRoutes);
-app.use(
-  `${BASE_PATH}/dashboard`,
-  (req, res, next) => {
-    if (req.method === "GET") {
-      cacheMiddleware(req, res, next);
-    } else {
-      next();
-    }
-  },
-  dashboardRoutes
-);
+app.use(`${BASE_PATH}/dashboard`, ...applyCacheIfGet(dashboardRoutes));
 
 //* Serve static files (e.g., PDFs) from the 'public' folder
 app.use("/public", express.static(path.join(__dirname, "public")));
