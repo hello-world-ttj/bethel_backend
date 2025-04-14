@@ -27,7 +27,7 @@ jobs:
       - name: Deploy to Lightsail via IPv6
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ env.SSH_HOST }} # Bracket-wrapped IPv6 address
+          host: "[2406:da1a:51c:8400:145:3a20:7d75:6f42]"
           username: ${{ env.SSH_USERNAME }}
           key: ${{ env.SSH_PRIVATE_KEY }}
           script: |
