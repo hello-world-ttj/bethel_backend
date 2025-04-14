@@ -25,7 +25,7 @@ jobs:
       - name: Deploy to Lightsail
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ env.LIGHTSAIL_INSTANCE_IP }}
+          host: "[${{ env.LIGHTSAIL_INSTANCE_IP }}]"
           username: ${{ env.SSH_USERNAME }}
           key: ${{ env.SSH_PRIVATE_KEY }}
           script: |
