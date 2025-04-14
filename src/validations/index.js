@@ -5,9 +5,11 @@ exports.createUser = Joi.object({
   regNo: Joi.string().required(),
   church: Joi.string().required(),
   image: Joi.string(),
-  email: Joi.string().email().required(),
-  phone: Joi.string().required(),
+  email: Joi.string().email(),
+  phone: Joi.string(),
   address: Joi.string().required(),
+  pincode: Joi.string(),
+  nativePlace: Joi.string()
 });
 
 exports.updateUser = Joi.object({
@@ -17,6 +19,8 @@ exports.updateUser = Joi.object({
   email: Joi.string().email(),
   phone: Joi.string(),
   address: Joi.string(),
+  pincode: Joi.string(),
+  nativePlace: Joi.string(),
 });
 
 exports.signup = Joi.object({

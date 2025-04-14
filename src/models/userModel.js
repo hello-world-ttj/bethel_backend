@@ -18,6 +18,7 @@ const userSchema = mongoose.Schema(
     },
     address: { type: String, trim: true },
     pincode: { type: String, trim: true },
+    nativePlace: { type: String, trim: true },
     password: { type: String, trim: true },
     role: {
       type: String,
