@@ -13,7 +13,6 @@ jobs:
     env:
       SSH_USERNAME: ${{ secrets.LIGHTSAIL_USERNAME }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      SSH_HOST: ${{ secrets.LIGHTSAIL_INSTANCE_IP }}
       ENV_FILE_PATH: /home/ubuntu/bethel/.env/.env.production
       PROJECT_DIR: bethel_backend
       APP_NAME: bethel_backend
