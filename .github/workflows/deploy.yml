@@ -21,9 +21,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Format IPv6 for SSH
-        run: echo "SSH_HOST=[${{ secrets.LIGHTSAIL_INSTANCE_IP }}]" >> $GITHUB_ENV
-
       - name: Deploy to Lightsail via IPv6
         uses: appleboy/ssh-action@master
         with:
