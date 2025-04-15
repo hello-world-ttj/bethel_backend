@@ -11,35 +11,34 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      LIGHTSAIL_INSTANCE_IP: ${{ secrets.LIGHTSAIL_INSTANCE_IP }}
       SSH_USERNAME: ${{ secrets.LIGHTSAIL_USERNAME }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       ENV_FILE_PATH: /home/ubuntu/bethel/.env/.env.production
-      PROJECT_DIR: bethel_backend
-      APP_NAME: bethel_backend
+      PROJECT_DIR: bethel-backend
+      APP_NAME: bethel-backend
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Format IPv6 for SSH
-        run: echo "SSH_HOST=[${{ secrets.LIGHTSAIL_INSTANCE_IP }}]" >> $GITHUB_ENV
-
       - name: Deploy to Lightsail
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ env.SSH_HOST }}
+          host: ${{ env.LIGHTSAIL_INSTANCE_IP }}
           username: ${{ env.SSH_USERNAME }}
           key: ${{ env.SSH_PRIVATE_KEY }}
           script: |
-            echo "Connected to server."
-
+            # Verify Node.js and npm installation
             node -v || { echo "Node.js not found"; exit 1; }
             npm -v || { echo "npm not found"; exit 1; }
 
+            # Install PM2 globally if not installed
             if ! command -v pm2 &> /dev/null; then
               sudo npm install -g pm2
             fi
 
+            # Clone the repository or pull the latest changes
             if [ -d "${{ env.PROJECT_DIR }}" ]; then
               cd ${{ env.PROJECT_DIR }}
               git pull origin main
@@ -48,15 +47,19 @@ jobs:
               cd ${{ env.PROJECT_DIR }}
             fi
 
+            # Install dependencies
+            cd bethel-backend
             npm install
 
+            # Copy environment file
             if [ -f "${{ env.ENV_FILE_PATH }}" ]; then
               cp ${{ env.ENV_FILE_PATH }} .env
             else
-              echo ".env file missing"
+              echo ".env file missing at ${{ env.ENV_FILE_PATH }}"
               exit 1
             fi
 
+            # Restart the application with PM2
             pm2 delete ${{ env.APP_NAME }} || true
             pm2 start npm --name ${{ env.APP_NAME }} -- run start
             pm2 save
