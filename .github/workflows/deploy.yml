@@ -15,8 +15,8 @@ jobs:
       SSH_USERNAME: ${{ secrets.LIGHTSAIL_USERNAME }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       ENV_FILE_PATH: /home/ubuntu/bethel/.env/.env.production
-      PROJECT_DIR: bethel-backend
-      APP_NAME: bethel-backend
+      PROJECT_DIR: bethel_backend
+      APP_NAME: bethel_backend
 
     steps:
       - name: Checkout repository
@@ -48,7 +48,7 @@ jobs:
             fi
 
             # Install dependencies
-            cd bethel-backend
+            cd bethel_backend
             npm install
 
             # Copy environment file
