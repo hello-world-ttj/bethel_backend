@@ -8,7 +8,7 @@ mongoose
   .then(() => {
     console.log(clc.blueBright("✓ Mongoose connection established..!"));
     //* Start the cron job
-    require("../jobs");
+    // require("../jobs");
   })
   .catch((error) => {
     console.log(clc.bgCyanBright(error));
