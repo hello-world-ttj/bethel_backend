@@ -156,17 +156,34 @@ exports.getSubs = async (req, res) => {
 
 exports.getSubsUsers = async (req, res) => {
   try {
+    //! for test printing
+    // const subs = await User.find({ role: "user" }).select(
+    //   "name address pincode phone"
+    // );
+
     const subs = await Subscription.find({ status: "active" }).populate(
       "user",
-      "name address"
+      "name address pincode phone"
     );
 
-    const users = Array(30)
-      .fill(subs[0])
-      .map((sub, index) => ({
-        name: `${sub.user.name} ${index + 1}`,
-        address: sub.user.address,
-      }));
+    if (subs.length === 0) {
+      return responseHandler(res, 404, "No active subscriptions found.");
+    }
+
+    //! for test printing
+    // const users = subs.map((sub) => ({
+    //   name: sub.name || "",
+    //   address: sub.address || "",
+    //   pincode: sub.pincode || "",
+    //   phone: sub.phone || "",
+    // }));
+
+    const users = subs.map((sub) => ({
+      name: sub.user.name || "",
+      address: sub.user.address || "",
+      pincode: sub.user.pincode || "",
+      phone: sub.user.phone || "",
+    }));
 
     const publicDir = path.join(__dirname, "../../../public");
     if (!fs.existsSync(publicDir)) {
@@ -184,6 +201,8 @@ exports.getSubsUsers = async (req, res) => {
     const labelWidth = (doc.page.width - doc.options.margin * 2) / columns;
     const labelHeight = (doc.page.height - doc.options.margin * 2) / rows;
     const padding = 5;
+    const fontSize = 8;
+    const lineSpacing = 12;
 
     let userIndex = 0;
 
@@ -192,7 +211,7 @@ exports.getSubsUsers = async (req, res) => {
         for (let col = 0; col < columns; col++) {
           if (userIndex >= users.length) break;
 
-          const { name, address } = users[userIndex];
+          const { name, address, pincode, phone } = users[userIndex];
 
           const nameUppercase = name.toUpperCase();
           const addressUppercase = address.toUpperCase();
@@ -201,14 +220,42 @@ exports.getSubsUsers = async (req, res) => {
           const y = doc.options.margin + row * labelHeight;
 
           doc.rect(x, y, labelWidth, labelHeight).stroke();
-          doc.text(`${nameUppercase}`, x + padding, y + padding, {
+          doc.fontSize(fontSize);
+
+          let currentY = y + padding;
+
+          // Name
+          doc.text(`${nameUppercase}`, x + padding, currentY, {
             width: labelWidth - padding * 2,
             align: "left",
           });
-          doc.text(`${addressUppercase}`, x + padding, y + 20, {
+
+          // Address
+          currentY += lineSpacing;
+          doc.text(`${addressUppercase}`, x + padding, currentY, {
             width: labelWidth - padding * 2,
             align: "left",
           });
+
+          // Add space after address
+          currentY += lineSpacing * 1.5;
+
+          // Conditionally show PIN
+          if (pincode) {
+            doc.text(`PIN: ${pincode}`, x + padding, currentY, {
+              width: labelWidth - padding * 2,
+              align: "left",
+            });
+            currentY += lineSpacing;
+          }
+
+          // Conditionally show Phone
+          if (phone) {
+            doc.text(`PH: ${phone}`, x + padding, currentY, {
+              width: labelWidth - padding * 2,
+              align: "left",
+            });
+          }
 
           userIndex++;
         }
