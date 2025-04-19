@@ -9,7 +9,6 @@ const {
   getSubsUsers,
 } = require("./subscription.controller");
 const router = express.Router();
-
 router.use(authVerify);
 router.route("/").post(createSub).get(getSubs);
 router.get("/generate-labels", getSubsUsers);
