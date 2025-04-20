@@ -9,7 +9,6 @@ const userRoutes = require("./src/modules/user/user.routes");
 const authRoutes = require("./src/modules/auth/auth.routes");
 const churchRoutes = require("./src/modules/church/church.routes");
 const plansRoutes = require("./src/modules/plan/plan.routes");
-const twilioRoutes = require("./src/modules/twilio/twilio.routes");
 const subscriptionRoutes = require("./src/modules/subscription/subscription.routes");
 const backupRoutes = require("./src/modules/backup/backup.routes");
 const dashboardRoutes = require("./src/modules/dashboard/dashboard.routes");
