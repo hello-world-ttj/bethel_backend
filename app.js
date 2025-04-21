@@ -50,8 +50,7 @@ app.get('/health', (req, res) => {
     {
       uptime: process.uptime(),
       timestamp: new Date().toISOString()
-    },
-    null
+    }
   );
 });
 
