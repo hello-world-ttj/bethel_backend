@@ -41,6 +41,20 @@ app.get(BASE_PATH, (req, res) => {
   );
 });
 
+//* Health Check Route
+app.get('/health', (req, res) => {
+  return responseHandler(
+    res,
+    200,
+    '✅ Server is healthy',
+    {
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString()
+    },
+    null
+  );
+});
+
 //* Routes with optional caching for GET
 const applyCacheIfGet = (route) => [
   (req, res, next) => {

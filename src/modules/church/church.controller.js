@@ -38,7 +38,7 @@ exports.getChurches = async (req, res) => {
       churches = await Church.find(filter)
         .skip(skipCount)
         .limit(limit)
-        .sort({ createdAt: -1 });
+        .sort({ name: 1 });
     }
 
     const totalCount = await Church.find(filter).countDocuments();

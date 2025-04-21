@@ -29,7 +29,7 @@ exports.getUsers = async (req, res) => {
       .populate("church", "name")
       .skip(skipCount)
       .limit(limit)
-      .sort({ createdAt: -1 });
+      .sort({ name: 1 });
 
     const totalCount = await User.find(filter).countDocuments();
     return responseHandler(res, 200, "Success", users, totalCount);
