@@ -62,4 +62,10 @@ client.on("ready", () => {
   console.log(clc.greenBright("🚀 Redis is ready for use."));
 });
 
-module.exports = { client, connectRedis, isRedisConnected };
+const getRedisConnectionStatus = () => isRedisConnected;
+
+module.exports = {
+  client,
+  connectRedis,
+  getRedisConnectionStatus,
+};
