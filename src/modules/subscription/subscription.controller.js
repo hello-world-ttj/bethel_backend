@@ -154,11 +154,31 @@ exports.getSubs = async (req, res) => {
   }
 };
 
+//? Helper: Wrap long text into multiple lines
+function wrapText(text, maxLength = 35) {
+  if (!text) return [];
+  const words = text.split(" ");
+  const lines = [];
+  let currentLine = "";
+
+  words.forEach((word) => {
+    if ((currentLine + " " + word).trim().length <= maxLength) {
+      currentLine += " " + word;
+    } else {
+      lines.push(currentLine.trim());
+      currentLine = word;
+    }
+  });
+
+  if (currentLine) lines.push(currentLine.trim());
+  return lines;
+}
+
 exports.getSubsUsers = async (req, res) => {
   try {
     //! for test printing
     // const subs = await User.find({ role: "user" }).select(
-    //   "name address pincode phone"
+    //   "name address pincode phone nativePlace"
     // );
 
     const subs = await Subscription.find({ status: "active" }).populate(
@@ -176,13 +196,15 @@ exports.getSubsUsers = async (req, res) => {
     //   address: sub.address || "",
     //   pincode: sub.pincode || "",
     //   phone: sub.phone || "",
+    //   nativePlace: sub.nativePlace || "",
     // }));
 
     const users = subs.map((sub) => ({
-      name: sub.user.name || "",
-      address: sub.user.address || "",
-      pincode: sub.user.pincode || "",
-      phone: sub.user.phone || "",
+      name: sub.user?.name || "",
+      address: sub.user?.address || "",
+      pincode: sub.user?.pincode || "",
+      phone: sub.user?.phone || "",
+      nativePlace: sub.nativePlace || "",
     }));
 
     const publicDir = path.join(__dirname, "../../../public");
@@ -202,7 +224,9 @@ exports.getSubsUsers = async (req, res) => {
     const labelHeight = (doc.page.height - doc.options.margin * 2) / rows;
     const padding = 5;
     const fontSize = 8;
-    const lineSpacing = 12;
+    const lineSpacing = 11;
+
+    doc.font("Helvetica").fontSize(fontSize);
 
     let userIndex = 0;
 
@@ -211,51 +235,33 @@ exports.getSubsUsers = async (req, res) => {
         for (let col = 0; col < columns; col++) {
           if (userIndex >= users.length) break;
 
-          const { name, address, pincode, phone } = users[userIndex];
+          const { name, address, pincode, phone, nativePlace } =
+            users[userIndex];
+          let lines = [];
 
-          const nameUppercase = name.toUpperCase();
-          const addressUppercase = address.toUpperCase();
+          //* Wrapped lines
+          lines = [
+            ...wrapText(name.toUpperCase()),
+            ...wrapText(address.toUpperCase()),
+          ];
+          if (pincode) lines.push(`PIN: ${pincode}`);
+          if (phone) lines.push(`PH: ${phone}`);
+          if (nativePlace) lines.push(nativePlace.toUpperCase());
 
           const x = doc.options.margin + col * labelWidth;
           const y = doc.options.margin + row * labelHeight;
 
-          doc.rect(x, y, labelWidth, labelHeight).stroke();
-          doc.fontSize(fontSize);
+          //* Vertical centering
+          const totalTextHeight = lines.length * lineSpacing;
+          let currentY = y + (labelHeight - totalTextHeight) / 2;
 
-          let currentY = y + padding;
-
-          // Name
-          doc.text(`${nameUppercase}`, x + padding, currentY, {
-            width: labelWidth - padding * 2,
-            align: "left",
-          });
-
-          // Address
-          currentY += lineSpacing;
-          doc.text(`${addressUppercase}`, x + padding, currentY, {
-            width: labelWidth - padding * 2,
-            align: "left",
-          });
-
-          // Add space after address
-          currentY += lineSpacing * 1.5;
-
-          // Conditionally show PIN
-          if (pincode) {
-            doc.text(`PIN: ${pincode}`, x + padding, currentY, {
-              width: labelWidth - padding * 2,
-              align: "left",
+          lines.forEach((line) => {
+            doc.text(line, x + padding, currentY, {
+              width: labelWidth - 2 * padding,
+              align: "center",
             });
             currentY += lineSpacing;
-          }
-
-          // Conditionally show Phone
-          if (phone) {
-            doc.text(`PH: ${phone}`, x + padding, currentY, {
-              width: labelWidth - padding * 2,
-              align: "left",
-            });
-          }
+          });
 
           userIndex++;
         }

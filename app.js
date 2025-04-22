@@ -12,7 +12,7 @@ const plansRoutes = require("./src/modules/plan/plan.routes");
 const subscriptionRoutes = require("./src/modules/subscription/subscription.routes");
 const backupRoutes = require("./src/modules/backup/backup.routes");
 const dashboardRoutes = require("./src/modules/dashboard/dashboard.routes");
-const { connectRedis } = require("./src/config/redisClient");
+const { connectRedis, isRedisConnected } = require("./src/config/redisClient");
 const cacheMiddleware = require("./src/middlewares/cacheMiddleware");
 
 //! Create an instance of the Express application
@@ -42,22 +42,17 @@ app.get(BASE_PATH, (req, res) => {
 });
 
 //* Health Check Route
-app.get('/health', (req, res) => {
-  return responseHandler(
-    res,
-    200,
-    '✅ Server is healthy',
-    {
-      uptime: process.uptime(),
-      timestamp: new Date().toISOString()
-    }
-  );
+app.get("/health", (req, res) => {
+  return responseHandler(res, 200, "✅ Server is healthy", {
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  });
 });
 
 //* Routes with optional caching for GET
 const applyCacheIfGet = (route) => [
   (req, res, next) => {
-    if (req.method === "GET") {
+    if (req.method === "GET" && isRedisConnected) {
       cacheMiddleware(req, res, next);
     } else {
       next();
