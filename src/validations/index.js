@@ -5,8 +5,8 @@ exports.createUser = Joi.object({
   regNo: Joi.string(),
   church: Joi.string().required(),
   image: Joi.string(),
-  email: Joi.string().email(),
-  phone: Joi.string(),
+  email: Joi.string().email().allow(""),
+  phone: Joi.string().allow(""),
   address: Joi.string().required(),
   pincode: Joi.string(),
   nativePlace: Joi.string()
