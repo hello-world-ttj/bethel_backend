@@ -84,7 +84,7 @@ app.use(`${BASE_PATH}/upload`, uploadRoutes);
 app.use("/public", express.static(path.join(__dirname, "public")));
 
 //* Define the directory where the files will be uploaded
-const uploadDir = "/home/church";
+const uploadDir = "/home/ubuntu/church";
 //* Serve static files from the /home/church folder
 app.use("/images", express.static(uploadDir));
 

@@ -3,7 +3,7 @@ const multer = require("multer");
 const router = express.Router();
 const { uploadFile } = require("./upload.controller");
 const authVerify = require("../../middlewares/authVerify");
-const uploadDir = "/home/church";
+const uploadDir = "/home/ubuntu/church";
 //! Set up multer storage configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
