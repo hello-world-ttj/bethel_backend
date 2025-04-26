@@ -2,23 +2,23 @@ const Joi = require("joi");
 
 exports.createUser = Joi.object({
   name: Joi.string().required(),
-  regNo: Joi.string(),
+  regNo: Joi.string().allow(""),
   church: Joi.string().required(),
   image: Joi.string(),
   email: Joi.string().email().allow(""),
   phone: Joi.string().allow(""),
   address: Joi.string().required(),
   pincode: Joi.string(),
-  nativePlace: Joi.string()
+  nativePlace: Joi.string(),
 });
 
 exports.updateUser = Joi.object({
   name: Joi.string(),
-  regNo: Joi.string(),
+  regNo: Joi.string().allow(""),
   church: Joi.string(),
   image: Joi.string(),
-  email: Joi.string().email(),
-  phone: Joi.string(),
+  email: Joi.string().email().allow(""),
+  phone: Joi.string().allow(""),
   address: Joi.string(),
   pincode: Joi.string(),
   nativePlace: Joi.string(),
@@ -65,7 +65,7 @@ exports.createSubscription = Joi.object({
   plan: Joi.string().required(),
   user: Joi.string().required(),
   expiryDate: Joi.date(),
-  receipt: Joi.string(),
+  receipt: Joi.string().allow(""),
 });
 
 exports.updateSubscription = Joi.object({
@@ -73,5 +73,5 @@ exports.updateSubscription = Joi.object({
   user: Joi.string(),
   expiryDate: Joi.date(),
   status: Joi.string(),
-  receipt: Joi.string(),
+  receipt: Joi.string().allow(""),
 });
