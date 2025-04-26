@@ -23,6 +23,6 @@ const upload = multer({
 });
 
 router.use(authVerify);
-router.post("/", upload.single("file"), uploadFile);
+router.post("/file", upload.single("file"), uploadFile);
 
 module.exports = router;
