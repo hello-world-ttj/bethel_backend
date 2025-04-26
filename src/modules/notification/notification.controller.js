@@ -2,6 +2,7 @@ const validation = require("../../validations");
 const responseHandler = require("../../helpers/responseHandler");
 const User = require("../../models/userModel");
 const NotificationLog = require("../../models/notificationLogModel");
+const sendMail = require("../../utils/sendMail");
 
 exports.createNotification = async (req, res) => {
   try {
@@ -59,8 +60,14 @@ exports.createNotification = async (req, res) => {
 
 exports.getNoficationsLogs = async (req, res) => {
   try {
-    const notifications = await NotificationLog.find();
-    return responseHandler(res, 200, "Success", notifications);
+    const { page = 1, limit = 10} = req.query;
+    const skipCount = limit * (page - 1);
+    const totalCount = await NotificationLog.countDocuments();
+    const notifications = await NotificationLog.find().skip(skipCount).limit(limit).populate({
+      path: "users",
+      select: "name",
+    });
+    return responseHandler(res, 200, "Success", notifications, totalCount);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);
   }

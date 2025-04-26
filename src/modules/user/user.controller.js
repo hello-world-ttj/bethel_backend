@@ -5,7 +5,7 @@ const validation = require("../../validations");
 
 exports.getUsers = async (req, res) => {
   try {
-    const { page = 1, status, limit = 10, search } = req.query;
+    const { page = 1, status, limit = 10, search, user } = req.query;
 
     const skipCount = limit * (page - 1);
     const filter = {
@@ -24,12 +24,18 @@ exports.getUsers = async (req, res) => {
         { "church.name": { $regex: search, $options: "i" } },
       ];
     }
-
-    const users = await User.find(filter)
-      .populate("church", "name")
-      .skip(skipCount)
-      .limit(limit)
-      .sort({ name: 1 });
+    let users;
+    if (user === "all") {
+      users = await User.find(filter)
+        .populate("church", "name")
+        .sort({ name: 1 });
+    } else {
+      users = await User.find(filter)
+        .populate("church", "name")
+        .skip(skipCount)
+        .limit(limit)
+        .sort({ name: 1 });
+    }
 
     const totalCount = await User.find(filter).countDocuments();
     return responseHandler(res, 200, "Success", users, totalCount);
