@@ -12,8 +12,12 @@ const plansRoutes = require("./src/modules/plan/plan.routes");
 const subscriptionRoutes = require("./src/modules/subscription/subscription.routes");
 const backupRoutes = require("./src/modules/backup/backup.routes");
 const dashboardRoutes = require("./src/modules/dashboard/dashboard.routes");
-const { connectRedis, getRedisConnectionStatus } = require("./src/config/redisClient");
+const {
+  connectRedis,
+  getRedisConnectionStatus,
+} = require("./src/config/redisClient");
 const cacheMiddleware = require("./src/middlewares/cacheMiddleware");
+const fs = require("fs");
 
 //! Create an instance of the Express application
 const app = express();
@@ -76,6 +80,16 @@ app.use(`${BASE_PATH}/dashboard`, ...applyCacheIfGet(dashboardRoutes));
 
 //* Serve static files (e.g., PDFs) from the 'public' folder
 app.use("/public", express.static(path.join(__dirname, "public")));
+
+//* Define the directory where the files will be uploaded
+const uploadDir = "/home/church";
+//* Serve static files from the /home/church folder
+app.use("/images", express.static(uploadDir));
+
+//* Ensure the directory exists, if not, create it
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 app.all("*", (req, res) => {
   return responseHandler(res, 404, "No API Found..!");
