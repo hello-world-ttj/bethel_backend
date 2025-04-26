@@ -2,7 +2,7 @@ const Joi = require("joi");
 
 exports.createUser = Joi.object({
   name: Joi.string().required(),
-  regNo: Joi.string().required(),
+  regNo: Joi.string(),
   church: Joi.string().required(),
   image: Joi.string(),
   email: Joi.string().email(),
@@ -14,6 +14,7 @@ exports.createUser = Joi.object({
 
 exports.updateUser = Joi.object({
   name: Joi.string(),
+  regNo: Joi.string(),
   church: Joi.string(),
   image: Joi.string(),
   email: Joi.string().email(),
@@ -64,7 +65,7 @@ exports.createSubscription = Joi.object({
   plan: Joi.string().required(),
   user: Joi.string().required(),
   expiryDate: Joi.date(),
-  receipt: Joi.string().required(),
+  receipt: Joi.string(),
 });
 
 exports.updateSubscription = Joi.object({
