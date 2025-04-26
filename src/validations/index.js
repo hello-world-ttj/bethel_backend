@@ -75,3 +75,10 @@ exports.updateSubscription = Joi.object({
   status: Joi.string(),
   receipt: Joi.string().allow(""),
 });
+
+exports.createNotification = Joi.object({
+  subject: Joi.string().required(),
+  content: Joi.string().required(),
+  users: Joi.array(),
+  media: Joi.string(),
+});
