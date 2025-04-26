@@ -12,6 +12,7 @@ const plansRoutes = require("./src/modules/plan/plan.routes");
 const subscriptionRoutes = require("./src/modules/subscription/subscription.routes");
 const backupRoutes = require("./src/modules/backup/backup.routes");
 const dashboardRoutes = require("./src/modules/dashboard/dashboard.routes");
+const uploadRoutes = require("./src/modules/upload/upload.routes");
 const {
   connectRedis,
   getRedisConnectionStatus,
@@ -77,6 +78,7 @@ app.use(`${BASE_PATH}/plans`, ...applyCacheIfGet(plansRoutes));
 app.use(`${BASE_PATH}/subscription`, ...applyCacheIfGet(subscriptionRoutes));
 app.use(`${BASE_PATH}/backup`, backupRoutes);
 app.use(`${BASE_PATH}/dashboard`, ...applyCacheIfGet(dashboardRoutes));
+app.use(`${BASE_PATH}/upload`, uploadRoutes);
 
 //* Serve static files (e.g., PDFs) from the 'public' folder
 app.use("/public", express.static(path.join(__dirname, "public")));
