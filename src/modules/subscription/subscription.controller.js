@@ -186,7 +186,7 @@ exports.getSubsUsers = async (req, res) => {
 
     const subs = await Subscription.find({ status: "active" }).populate(
       "user",
-      "name address pincode phone"
+      "name address pincode nativePlace"
     );
 
     if (subs.length === 0) {
@@ -206,7 +206,6 @@ exports.getSubsUsers = async (req, res) => {
       name: sub.user?.name || "",
       address: sub.user?.address || "",
       pincode: sub.user?.pincode || "",
-      phone: sub.user?.phone || "",
       nativePlace: sub.nativePlace || "",
     }));
 
@@ -238,7 +237,7 @@ exports.getSubsUsers = async (req, res) => {
         for (let col = 0; col < columns; col++) {
           if (userIndex >= users.length) break;
 
-          const { name, address, pincode, phone, nativePlace } =
+          const { name, address, pincode, nativePlace } =
             users[userIndex];
           let lines = [];
 
@@ -247,9 +246,8 @@ exports.getSubsUsers = async (req, res) => {
             ...wrapText(name.toUpperCase()),
             ...wrapText(address.toUpperCase()),
           ];
-          if (pincode) lines.push(`PIN: ${pincode}`);
-          if (phone) lines.push(`PH: ${phone}`);
           if (nativePlace) lines.push(nativePlace.toUpperCase());
+          if (pincode) lines.push(`PIN: ${pincode}`);
 
           const x = doc.options.margin + col * labelWidth;
           const y = doc.options.margin + row * labelHeight;
