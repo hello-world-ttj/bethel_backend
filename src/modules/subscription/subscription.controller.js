@@ -6,6 +6,7 @@ const PDFDocument = require("pdfkit");
 const fs = require("fs");
 const path = require("path");
 const User = require("../../models/userModel");
+const { clearCacheByPattern } = require("../../helpers/cacheUtils");
 
 exports.createSub = async (req, res) => {
   try {
@@ -45,7 +46,7 @@ exports.createSub = async (req, res) => {
     });
 
     await User.findByIdAndUpdate(user, { status: "active" });
-
+    await clearCacheByPattern("/api/v1/*");
     return responseHandler(res, 201, "Success", newSub);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error: ${error.message}`);
@@ -73,6 +74,7 @@ exports.updateSub = async (req, res) => {
     const sub = await Subscription.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
+    await clearCacheByPattern("/api/v1/subscription*");
     return responseHandler(res, 200, "Success", sub);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);
@@ -83,6 +85,7 @@ exports.deleteSub = async (req, res) => {
   try {
     const sub = await Subscription.findByIdAndDelete(req.params.id);
     await User.findByIdAndUpdate(sub.user, { status: "inactive" });
+    await clearCacheByPattern("/api/v1/subscription*");
     return responseHandler(res, 200, "Success", sub);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);

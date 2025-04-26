@@ -1,6 +1,7 @@
 const Church = require("../../models/churchModel");
 const responseHandler = require("../../helpers/responseHandler");
 const validation = require("../../validations");
+const { clearCacheByPattern } = require("../../helpers/cacheUtils");
 
 exports.createChurch = async (req, res) => {
   try {
@@ -11,6 +12,7 @@ exports.createChurch = async (req, res) => {
       return responseHandler(res, 400, `Invalid input: ${error.message}`);
     }
     const church = await Church.create(req.body);
+    await clearCacheByPattern("/api/v1/church*");
     return responseHandler(res, 200, "Success", church);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);
@@ -68,6 +70,7 @@ exports.updateChurch = async (req, res) => {
     const church = await Church.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
+    await clearCacheByPattern("/api/v1/church*");
     return responseHandler(res, 200, "Success", church);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);
@@ -77,6 +80,7 @@ exports.updateChurch = async (req, res) => {
 exports.deleteChurch = async (req, res) => {
   try {
     const church = await Church.findByIdAndDelete(req.params.id);
+    await clearCacheByPattern("/api/v1/church*");
     return responseHandler(res, 200, "Success", church);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);

@@ -1,6 +1,7 @@
 const Plan = require("../../models/planModel");
 const responseHandler = require("../../helpers/responseHandler");
 const validation = require("../../validations");
+const { clearCacheByPattern } = require("../../helpers/cacheUtils");
 
 exports.createPlan = async (req, res) => {
   try {
@@ -11,6 +12,7 @@ exports.createPlan = async (req, res) => {
       return responseHandler(res, 400, `Invalid input: ${error.message}`);
     }
     const plan = await Plan.create(req.body);
+    await clearCacheByPattern("/api/v1/plans*");
     return responseHandler(res, 200, "Success", plan);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);
@@ -60,6 +62,7 @@ exports.updatePlan = async (req, res) => {
     const plan = await Plan.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
+    await clearCacheByPattern("/api/v1/plans*");
     return responseHandler(res, 200, "Success", plan);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);
@@ -69,6 +72,7 @@ exports.updatePlan = async (req, res) => {
 exports.deletePlan = async (req, res) => {
   try {
     const plan = await Plan.findByIdAndDelete(req.params.id);
+    await clearCacheByPattern("/api/v1/plans*");
     return responseHandler(res, 200, "Success", plan);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);
