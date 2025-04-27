@@ -85,7 +85,7 @@ exports.deleteSub = async (req, res) => {
   try {
     const sub = await Subscription.findByIdAndDelete(req.params.id);
     await User.findByIdAndUpdate(sub.user, { status: "inactive" });
-    await clearCacheByPattern("/api/v1/subscription*");
+    await clearCacheByPattern("/api/v1/*");
     return responseHandler(res, 200, "Success", sub);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);
