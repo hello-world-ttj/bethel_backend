@@ -57,9 +57,9 @@ exports.getChurches = async (req, res) => {
       if (!userCountByChurch[churchId]) {
         userCountByChurch[churchId] = { activeUser: 0, inActiveUser: 0 };
       }
-      if (user.isActive) {
+      if (user.status === "active") {
         userCountByChurch[churchId].activeUser += 1;
-      } else {
+      } else if (user.status === "inactive") {
         userCountByChurch[churchId].inActiveUser += 1;
       }
     });
