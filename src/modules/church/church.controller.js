@@ -2,6 +2,7 @@ const Church = require("../../models/churchModel");
 const responseHandler = require("../../helpers/responseHandler");
 const validation = require("../../validations");
 const { clearCacheByPattern } = require("../../helpers/cacheUtils");
+const User = require("../../models/userModel");
 
 exports.createChurch = async (req, res) => {
   try {
@@ -23,7 +24,7 @@ exports.getChurches = async (req, res) => {
   try {
     const { page = 1, limit = 10, search, church } = req.query;
 
-    const skipCount = limit * (page - 1);
+    const skipCount = (parseInt(page) - 1) * parseInt(limit);
     const filter = {};
 
     if (search) {
@@ -32,21 +33,50 @@ exports.getChurches = async (req, res) => {
         { address: { $regex: search, $options: "i" } },
       ];
     }
+
     let churches;
 
     if (church === "all") {
-      churches = await Church.find(filter).sort({ createdAt: -1 });
+      churches = await Church.find(filter).sort({ name: 1 }).lean();
     } else {
       churches = await Church.find(filter)
         .skip(skipCount)
-        .limit(limit)
-        .sort({ name: 1 });
+        .limit(parseInt(limit))
+        .sort({ name: 1 })
+        .lean();
     }
 
-    const totalCount = await Church.find(filter).countDocuments();
+    const churchIds = churches.map((c) => c._id);
+
+    const users = await User.find({ church: { $in: churchIds } }).lean();
+
+    const userCountByChurch = {};
+
+    users.forEach((user) => {
+      const churchId = user.church?.toString();
+      if (!userCountByChurch[churchId]) {
+        userCountByChurch[churchId] = { activeUser: 0, inActiveUser: 0 };
+      }
+      if (user.isActive) {
+        userCountByChurch[churchId].activeUser += 1;
+      } else {
+        userCountByChurch[churchId].inActiveUser += 1;
+      }
+    });
+
+    churches = churches.map((church) => {
+      const counts = userCountByChurch[church._id.toString()] || {
+        activeUser: 0,
+        inActiveUser: 0,
+      };
+      return { ...church, ...counts };
+    });
+
+    const totalCount = await Church.countDocuments(filter);
+
     return responseHandler(res, 200, "Success", churches, totalCount);
   } catch (error) {
-    return responseHandler(res, 500, `Internal Server Error ${error.message}`);
+    return responseHandler(res, 500, `Internal Server Error: ${error.message}`);
   }
 };
 
