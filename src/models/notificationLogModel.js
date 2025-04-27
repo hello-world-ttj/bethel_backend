@@ -6,6 +6,7 @@ const notificationLogSchema = mongoose.Schema(
     subject: { type: String },
     content: { type: String },
     media: { type: String },
+    type: { type: String, enum: ["email", "whatsapp"] },
   },
   { timestamps: true }
 );
