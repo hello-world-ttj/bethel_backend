@@ -82,6 +82,6 @@ exports.createNotification = Joi.object({
   subject: Joi.string().required(),
   content: Joi.string().required(),
   users: Joi.array(),
-  media: Joi.string(),
+  media: Joi.string().allow(""),
   type: Joi.string().required(),
 });
