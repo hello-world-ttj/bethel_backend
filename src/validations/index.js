@@ -1,7 +1,7 @@
 const Joi = require("joi");
 
 exports.createUser = Joi.object({
-  salutation: Joi.string(),
+  salutation: Joi.string().allow(""),
   name: Joi.string().required(),
   regNo: Joi.string().allow(""),
   church: Joi.string().required(),
@@ -14,7 +14,7 @@ exports.createUser = Joi.object({
 });
 
 exports.updateUser = Joi.object({
-  salutation: Joi.string(),
+  salutation: Joi.string().allow(""),
   name: Joi.string(),
   regNo: Joi.string().allow(""),
   church: Joi.string(),
