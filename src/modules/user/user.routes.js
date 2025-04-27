@@ -6,6 +6,7 @@ const {
   updateUser,
   deleteUser,
   getUsersByChurch,
+  clearCache,
 } = require("./user.controller");
 const authVerify = require("../../middlewares/authVerify");
 const router = express.Router();
