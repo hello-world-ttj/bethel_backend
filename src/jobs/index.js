@@ -1,1 +1,2 @@
 require("./updateSubscription");
+require("./removePublicFolder");
