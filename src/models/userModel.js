@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const userSchema = mongoose.Schema(
   {
+    salutation: { type: String, trim: true },
     name: { type: String, trim: true },
     church: {
       type: mongoose.Schema.Types.ObjectId,

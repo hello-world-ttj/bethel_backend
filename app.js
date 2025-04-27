@@ -91,9 +91,9 @@ const uploadDir = "/home/ubuntu/church";
 app.use("/images", express.static(uploadDir));
 
 //* Ensure the directory exists, if not, create it
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+// if (!fs.existsSync(uploadDir)) {
+//   fs.mkdirSync(uploadDir, { recursive: true });
+// }
 
 app.all("*", (req, res) => {
   return responseHandler(res, 404, "No API Found..!");

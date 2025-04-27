@@ -8,8 +8,8 @@ const User = require("../../models/userModel");
 exports.dashboard = async (req, res) => {
   try {
     const { page = 1, limit = 10 } = req.query;
-
     const skipCount = 10 * (page - 1);
+    const currentYear = new Date().getFullYear();
 
     const [
       activeUsers,
@@ -18,6 +18,7 @@ exports.dashboard = async (req, res) => {
       plans,
       subsList,
       subsListCount,
+      monthlyTotals,
     ] = await Promise.all([
       User.countDocuments({ status: "active", role: "user" }),
       User.countDocuments({ role: "user" }),
@@ -37,7 +38,45 @@ exports.dashboard = async (req, res) => {
         .limit(limit)
         .sort({ createdAt: -1 }),
       Subscription.countDocuments({ status: "active" }),
+      Subscription.aggregate([
+        {
+          $lookup: {
+            from: "plans",
+            localField: "plan",
+            foreignField: "_id",
+            as: "planData",
+          },
+        },
+        { $unwind: "$planData" },
+        {
+          $match: {
+            createdAt: {
+              $gte: new Date(`${currentYear}-01-01T00:00:00.000Z`),
+              $lte: new Date(`${currentYear}-12-31T23:59:59.999Z`),
+            },
+            status: "active",
+          },
+        },
+        {
+          $group: {
+            _id: { $month: "$createdAt" },
+            totalPrice: { $sum: "$planData.price" },
+          },
+        },
+        {
+          $project: {
+            month: "$_id",
+            totalPrice: 1,
+            _id: 0,
+          },
+        },
+      ]),
     ]);
+
+    const monthlyPlanPrices = Array(12).fill(0);
+    monthlyTotals.forEach((item) => {
+      monthlyPlanPrices[item.month - 1] = item.totalPrice;
+    });
 
     return responseHandler(res, 200, "Success", {
       activeUsers,
@@ -46,6 +85,7 @@ exports.dashboard = async (req, res) => {
       plans,
       subsList,
       subsListCount,
+      monthlyPlanPrices,
     });
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error: ${error.message}`);
