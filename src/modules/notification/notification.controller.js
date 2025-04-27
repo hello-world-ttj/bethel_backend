@@ -3,6 +3,7 @@ const responseHandler = require("../../helpers/responseHandler");
 const User = require("../../models/userModel");
 const NotificationLog = require("../../models/notificationLogModel");
 const sendMail = require("../../utils/sendMail");
+const { clearCacheByPattern } = require("../../helpers/cacheUtils");
 
 exports.createNotification = async (req, res) => {
   try {
@@ -46,6 +47,7 @@ exports.createNotification = async (req, res) => {
     }
 
     const createNotification = await NotificationLog.create(req.body);
+    await clearCacheByPattern("/api/v1/notification*");
 
     return responseHandler(
       res,
@@ -60,13 +62,16 @@ exports.createNotification = async (req, res) => {
 
 exports.getNoficationsLogs = async (req, res) => {
   try {
-    const { page = 1, limit = 10} = req.query;
+    const { page = 1, limit = 10 } = req.query;
     const skipCount = limit * (page - 1);
     const totalCount = await NotificationLog.countDocuments();
-    const notifications = await NotificationLog.find().skip(skipCount).limit(limit).populate({
-      path: "users",
-      select: "name",
-    });
+    const notifications = await NotificationLog.find()
+      .skip(skipCount)
+      .limit(limit)
+      .populate({
+        path: "users",
+        select: "name",
+      });
     return responseHandler(res, 200, "Success", notifications, totalCount);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);

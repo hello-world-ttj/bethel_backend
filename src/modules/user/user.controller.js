@@ -98,7 +98,7 @@ exports.createUser = async (req, res) => {
     }
     req.body.role = "user";
     const user = await User.create(req.body);
-    await clearCacheByPattern("/api/v1/users*");
+    await clearCacheByPattern("/api/v1/*");
     return responseHandler(res, 200, "Success", user);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);
