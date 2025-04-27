@@ -74,7 +74,7 @@ exports.updateSub = async (req, res) => {
     const sub = await Subscription.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
-    await clearCacheByPattern("/api/v1/subscription*");
+    await clearCacheByPattern("/api/v1/*");
     return responseHandler(res, 200, "Success", sub);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);

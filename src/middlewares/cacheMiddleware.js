@@ -17,7 +17,7 @@ const cacheMiddleware = async (req, res, next) => {
 
     res.sendResponse = res.json;
     res.json = async (body) => {
-      await client.setEx(key, 3600, JSON.stringify(body));
+      await client.setEx(key, 1800, JSON.stringify(body));
       res.sendResponse(body);
     };
 

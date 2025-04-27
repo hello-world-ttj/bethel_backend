@@ -141,3 +141,12 @@ exports.deleteUser = async (req, res) => {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);
   }
 };
+
+exports.clearCache = async (req, res) => {
+  try {
+    await clearCacheByPattern("/api/v1/*");
+    return responseHandler(res, 200, "Success");
+  } catch (error) {
+    return responseHandler(res, 500, `Internal Server Error ${error.message}`);
+  }
+};
