@@ -59,7 +59,10 @@ app.get("/health", (req, res) => {
 //* Routes with optional caching for GET
 const applyCacheIfGet = (route) => [
   (req, res, next) => {
-    if (req.method === "GET") {
+    if (
+      req.method === "GET" &&
+      req.originalUrl !== "/api/v1/subscription/generate-labels"
+    ) {
       if (getRedisConnectionStatus()) {
         return cacheMiddleware(req, res, next);
       } else {

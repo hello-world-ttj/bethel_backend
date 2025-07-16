@@ -180,34 +180,36 @@ function wrapText(text, maxLength = 35) {
 exports.getSubsUsers = async (req, res) => {
   try {
     //! for test printing
-    // const subs = await User.find({ role: "user" }).select(
-    //   "name address pincode phone nativePlace"
-    // );
-
-    const subs = await Subscription.find({ status: "active" }).populate(
-      "user",
-      "name address pincode nativePlace"
+    const subs = await User.find({ role: "user" }).select(
+      "salutation name address pincode phone nativePlace"
     );
+
+    // const subs = await Subscription.find({ status: "active" }).populate(
+    //   "user",
+    //   "salutation name address pincode nativePlace"
+    // );
 
     if (subs.length === 0) {
       return responseHandler(res, 404, "No active subscriptions found.");
     }
 
     //! for test printing
-    // const users = subs.map((sub) => ({
-    //   name: sub.name || "",
-    //   address: sub.address || "",
-    //   pincode: sub.pincode || "",
-    //   phone: sub.phone || "",
-    //   nativePlace: sub.nativePlace || "",
-    // }));
-
     const users = subs.map((sub) => ({
-      name: sub.user?.name || "",
-      address: sub.user?.address || "",
-      pincode: sub.user?.pincode || "",
+      salutation: sub.salutation || "",
+      name: sub.name || "",
+      address: sub.address || "",
+      pincode: sub.pincode || "",
+      phone: sub.phone || "",
       nativePlace: sub.nativePlace || "",
     }));
+
+    // const users = subs.map((sub) => ({
+    //   salutation: sub.user?.salutation || "",
+    //   name: sub.user?.name || "",
+    //   address: sub.user?.address || "",
+    //   pincode: sub.user?.pincode || "",
+    //   nativePlace: sub.nativePlace || "",
+    // }));
 
     const publicDir = path.join(__dirname, "../../../public");
     if (!fs.existsSync(publicDir)) {
@@ -237,13 +239,13 @@ exports.getSubsUsers = async (req, res) => {
         for (let col = 0; col < columns; col++) {
           if (userIndex >= users.length) break;
 
-          const { name, address, pincode, nativePlace } =
+          const { salutation, name, address, pincode, nativePlace } =
             users[userIndex];
           let lines = [];
 
           //* Wrapped lines
           lines = [
-            ...wrapText(name.toUpperCase()),
+            ...wrapText(`${salutation.toUpperCase()}. ${name.toUpperCase()}`),
             ...wrapText(address.toUpperCase()),
           ];
           if (nativePlace) lines.push(nativePlace.toUpperCase());
