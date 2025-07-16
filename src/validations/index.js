@@ -11,6 +11,8 @@ exports.createUser = Joi.object({
   address: Joi.string().required(),
   pincode: Joi.string(),
   nativePlace: Joi.string(),
+  street: Joi.string(),
+  postOffCode: Joi.string(),
 });
 
 exports.updateUser = Joi.object({
@@ -24,6 +26,8 @@ exports.updateUser = Joi.object({
   address: Joi.string(),
   pincode: Joi.string(),
   nativePlace: Joi.string(),
+  street: Joi.string(),
+  postOffCode: Joi.string(),
 });
 
 exports.signup = Joi.object({
