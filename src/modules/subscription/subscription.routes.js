@@ -7,6 +7,7 @@ const {
   updateSub,
   deleteSub,
   getSubsUsers,
+  getSubByUserId,
 } = require("./subscription.controller");
 const router = express.Router();
 router.use(authVerify);
