@@ -285,3 +285,14 @@ exports.getSubsUsers = async (req, res) => {
     return responseHandler(res, 500, `Internal Server Error: ${error.message}`);
   }
 };
+
+exports.getSubByUserId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) return responseHandler(res, 400, "User id is required");
+    const sub = await Subscription.findOne({ user: id }).populate("plan");
+    return responseHandler(res, 200, "Success", sub);
+  } catch (error) {
+    return responseHandler(res, 500, `Internal Server Error ${error.message}`);
+  }
+};
