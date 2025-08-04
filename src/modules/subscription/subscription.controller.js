@@ -259,7 +259,7 @@ exports.getSubsUsers = async (req, res) => {
             ...wrapText(address.toUpperCase()),
           ];
           if (street) lines.push(street.toUpperCase());
-          if (postOffCode) lines.push(postOffCode.toUpperCase());
+          if (postOffCode) lines.push(`${postOffCode.toUpperCase()} P.O.`);
           if (nativePlace) lines.push(nativePlace.toUpperCase());
           if (pincode) lines.push(`PIN: ${pincode}`);
 
