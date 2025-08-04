@@ -97,23 +97,21 @@ exports.getSubs = async (req, res) => {
     const { page = 1, limit = 10, search, status } = req.query;
     const skipCount = limit * (page - 1);
 
-    const match = {};
+    const topMatch = {};
+    if (status) {
+      topMatch.status = status;
+    }
 
+    const searchMatch = {};
     if (search) {
-      match.$or = [
+      searchMatch.$or = [
         { "user.name": { $regex: search, $options: "i" } },
         { receipt: { $regex: search, $options: "i" } },
       ];
     }
 
-    if (status) {
-      match.status = status;
-    }
-
     const subs = await Subscription.aggregate([
-      { $skip: skipCount },
-      { $limit: Number(limit) },
-      { $sort: { createdAt: -1 } },
+      { $match: topMatch },
       {
         $lookup: {
           from: "users",
@@ -123,7 +121,7 @@ exports.getSubs = async (req, res) => {
         },
       },
       { $unwind: "$user" },
-      { $match: match },
+      ...(search ? [{ $match: searchMatch }] : []),
       {
         $lookup: {
           from: "plans",
@@ -133,6 +131,9 @@ exports.getSubs = async (req, res) => {
         },
       },
       { $unwind: "$plan" },
+      { $sort: { createdAt: -1 } },
+      { $skip: skipCount },
+      { $limit: Number(limit) },
       {
         $project: {
           "user._id": 1,
@@ -149,7 +150,22 @@ exports.getSubs = async (req, res) => {
       },
     ]);
 
-    const totalCount = await Subscription.countDocuments(match);
+    const countAgg = await Subscription.aggregate([
+      { $match: topMatch },
+      {
+        $lookup: {
+          from: "users",
+          localField: "user",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" },
+      ...(search ? [{ $match: searchMatch }] : []),
+      { $count: "total" },
+    ]);
+
+    const totalCount = countAgg[0]?.total || 0;
 
     return responseHandler(res, 200, "Success", subs, totalCount);
   } catch (error) {
