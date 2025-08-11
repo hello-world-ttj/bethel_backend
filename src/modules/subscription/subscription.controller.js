@@ -290,6 +290,8 @@ exports.getSubsUsers = async (req, res) => {
             doc.text(line, x + padding, currentY, {
               width: labelWidth - padding * 2,
               align: "center",
+              continued: false,
+              lineBreak: false,
             });
             currentY += lineSpacing;
           });
