@@ -277,7 +277,6 @@ exports.getSubsUsers = async (req, res) => {
           if (postOffCode) lines.push(`${postOffCode.toUpperCase()} P.O.`);
           if (pincode) lines.push(`PIN: ${pincode}`);
           if (nativePlace) lines.push(nativePlace.toUpperCase());
-          if (street) lines.push(street.toUpperCase());
 
           const x = doc.options.margin + col * labelWidth;
           const y = doc.options.margin + row * labelHeight;
