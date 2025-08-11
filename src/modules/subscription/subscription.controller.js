@@ -288,7 +288,7 @@ exports.getSubsUsers = async (req, res) => {
 
           lines.forEach((line) => {
             doc.text(line, x + padding, currentY, {
-              width: labelWidth - 2 * padding,
+              width: labelWidth - padding * 2,
               align: "center",
             });
             currentY += lineSpacing;
