@@ -224,7 +224,7 @@ exports.getSubsUsers = async (req, res) => {
       name: sub.user?.name || "",
       address: sub.user?.address || "",
       pincode: sub.user?.pincode || "",
-      nativePlace: sub.nativePlace || "",
+      nativePlace: sub.user?.nativePlace || "",
       phone: sub.user?.phone || "",
       street: sub.user?.street || "",
       postOffCode: sub.user?.postOffCode || "",
