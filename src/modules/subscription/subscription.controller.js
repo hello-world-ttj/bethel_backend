@@ -246,7 +246,7 @@ exports.getSubsUsers = async (req, res) => {
     const labelWidth = (doc.page.width - doc.options.margin * 2) / columns;
     const labelHeight = (doc.page.height - doc.options.margin * 2) / rows;
     const padding = 5;
-    const fontSize = 7;
+    const fontSize = 8;
     const lineSpacing = 11;
 
     doc.font("Helvetica").fontSize(fontSize);
@@ -290,8 +290,6 @@ exports.getSubsUsers = async (req, res) => {
             doc.text(line, x + padding, currentY, {
               width: labelWidth - padding * 2,
               align: "center",
-              continued: false,
-              lineBreak: false,
             });
             currentY += lineSpacing;
           });
