@@ -202,7 +202,7 @@ exports.getSubsUsers = async (req, res) => {
 
     const subs = await Subscription.find({ status: "active" }).populate(
       "user",
-      "salutation name address pincode nativePlace street postOffCode"
+      "salutation name address pincode nativePlace street postOffCode phone"
     );
 
     if (subs.length === 0) {
@@ -228,6 +228,7 @@ exports.getSubsUsers = async (req, res) => {
       phone: sub.user?.phone || "",
       street: sub.user?.street || "",
       postOffCode: sub.user?.postOffCode || "",
+      phone: sub.user?.phone || "",
     }));
 
     const publicDir = path.join(__dirname, "../../../public");
@@ -266,6 +267,7 @@ exports.getSubsUsers = async (req, res) => {
             nativePlace,
             street,
             postOffCode,
+            phone,
           } = users[userIndex];
           let lines = [];
 
@@ -274,10 +276,12 @@ exports.getSubsUsers = async (req, res) => {
             ...wrapText(`${salutation.toUpperCase()}. ${name.toUpperCase()}`),
             ...wrapText(address.toUpperCase()),
           ];
-          if (street) lines.push(street.toUpperCase());
           if (postOffCode) lines.push(`${postOffCode.toUpperCase()} P.O.`);
-          if (nativePlace) lines.push(nativePlace.toUpperCase());
           if (pincode) lines.push(`PIN: ${pincode}`);
+          if (nativePlace) lines.push(nativePlace.toUpperCase());
+          if (street) lines.push(street.toUpperCase());
+          if (pincode) lines.push(`PIN: ${pincode}`);
+          if (phone) lines.push(`PH: ${phone}`);
 
           const x = doc.options.margin + col * labelWidth;
           const y = doc.options.margin + row * labelHeight;
