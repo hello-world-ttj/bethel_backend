@@ -280,7 +280,6 @@ exports.getSubsUsers = async (req, res) => {
           if (pincode) lines.push(`PIN: ${pincode}`);
           if (nativePlace) lines.push(nativePlace.toUpperCase());
           if (street) lines.push(street.toUpperCase());
-          if (pincode) lines.push(`PIN: ${pincode}`);
           if (phone) lines.push(`PH: ${phone}`);
 
           const x = doc.options.margin + col * labelWidth;
