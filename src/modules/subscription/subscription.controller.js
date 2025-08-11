@@ -246,7 +246,7 @@ exports.getSubsUsers = async (req, res) => {
     const labelWidth = (doc.page.width - doc.options.margin * 2) / columns;
     const labelHeight = (doc.page.height - doc.options.margin * 2) / rows;
     const padding = 5;
-    const fontSize = 8;
+    const fontSize = 7;
     const lineSpacing = 11;
 
     doc.font("Helvetica").fontSize(fontSize);
