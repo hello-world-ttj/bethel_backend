@@ -1,7 +1,8 @@
 const moment = require("moment-timezone");
 const Subscription = require("../models/subscriptionModel");
 const User = require("../models/userModel");
-
+//* Import database connection module
+require("../helpers/connection");
 const updateSubscription = async () => {
   const now = moment().tz("Asia/Kolkata");
   const oneMonthFromNow = moment().tz("Asia/Kolkata").add(1, "month");

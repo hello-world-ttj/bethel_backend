@@ -2,10 +2,16 @@ const fs = require("fs");
 const path = require("path");
 const moment = require("moment-timezone");
 
-const publicFolderPath = path.join(__dirname, "public");
+// Adjust path to point to project root public folder
+const publicFolderPath = path.join(__dirname, "../../public");
 
 const removePublicFolder = async () => {
   try {
+    if (!fs.existsSync(publicFolderPath)) {
+      console.log(`Folder does not exist: ${publicFolderPath}`);
+      return;
+    }
+
     const files = await fs.promises.readdir(publicFolderPath);
     const now = moment().tz("Asia/Kolkata");
 

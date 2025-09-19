@@ -1,9 +1,9 @@
-name: Attendance Cron Jobs
+name: Expiration Cron Jobs
 
 on:
   workflow_dispatch: # Manual trigger
   schedule:
-    - cron: "15 17 * * *" # 10:45 PM IST => 17:15 UTC
+    - cron: "5 18 * * *" # 11:35 PM IST => 18:05 UTC
 
 jobs:
   attendance_job:
