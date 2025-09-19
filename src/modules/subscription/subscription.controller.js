@@ -174,7 +174,7 @@ exports.getSubs = async (req, res) => {
 };
 
 //? Helper: Wrap long text into multiple lines
-function wrapText(text, maxLength = 35) {
+function wrapText(text, maxLength = 30) {
   if (!text) return [];
   const words = text.split(" ");
   const lines = [];
