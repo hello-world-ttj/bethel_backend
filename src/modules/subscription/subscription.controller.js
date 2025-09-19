@@ -226,7 +226,6 @@ exports.getSubsUsers = async (req, res) => {
       pincode: sub.user?.pincode || "",
       nativePlace: sub.user?.nativePlace || "",
       phone: sub.user?.phone || "",
-      street: sub.user?.street || "",
       postOffCode: sub.user?.postOffCode || "",
     }));
 
@@ -264,7 +263,6 @@ exports.getSubsUsers = async (req, res) => {
             address,
             pincode,
             nativePlace,
-            street,
             postOffCode,
           } = users[userIndex];
           let lines = [];
