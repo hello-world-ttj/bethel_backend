@@ -1,10 +1,8 @@
-require("dotenv").config();
-const cron = require("node-cron");
 const moment = require("moment-timezone");
 const Subscription = require("../models/subscriptionModel");
 const User = require("../models/userModel");
 
-cron.schedule("0 0 * * *", async () => {
+const updateSubscription = async () => {
   const now = moment().tz("Asia/Kolkata");
   const oneMonthFromNow = moment().tz("Asia/Kolkata").add(1, "month");
 
@@ -24,24 +22,28 @@ cron.schedule("0 0 * * *", async () => {
 
     for (const subscription of expiredSubscriptions) {
       subscription.status = "expired";
-      await User.findByIdAndUpdate(
-        subscription.user._id,
-        { status: "expired" },
-        { new: true }
-      );
+      await User.findByIdAndUpdate(subscription.user._id, {
+        status: "expired",
+      });
       await subscription.save();
+      console.log(
+        `Expired subscription updated for user: ${subscription.user._id}`
+      );
     }
 
     for (const subscription of expiringSubscriptions) {
       subscription.status = "expiring";
-      await User.findByIdAndUpdate(
-        subscription.user._id,
-        { status: "expiring" },
-        { new: true }
-      );
+      await User.findByIdAndUpdate(subscription.user._id, {
+        status: "expiring",
+      });
       await subscription.save();
+      console.log(
+        `Expiring subscription updated for user: ${subscription.user._id}`
+      );
     }
   } catch (err) {
     console.error("Error updating subscriptions:", err);
   }
-});
+};
+
+module.exports = updateSubscription;
