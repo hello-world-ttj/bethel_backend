@@ -9,6 +9,7 @@ const updateSubscription = async () => {
   const oneMonthFromNow = moment().tz("Asia/Kolkata").add(1, "month");
 
   try {
+    console.log("Executing updateSubscription job");
     const expiredSubscriptions = await Subscription.find({
       expiryDate: { $lte: now.toDate() },
       status: "active",
@@ -43,6 +44,7 @@ const updateSubscription = async () => {
         `Expiring subscription updated for user: ${subscription.user._id}`
       );
     }
+    console.log("updateSubscription job completed");
   } catch (err) {
     console.error("Error updating subscriptions:", err);
   }

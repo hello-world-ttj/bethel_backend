@@ -1,14 +1,12 @@
 require("dotenv").config();
 const cron = require("node-cron");
 
-// Import job functions
 const updateSubscription = require("./updateSubscription");
 const removePublicFolder = require("./removePublicFolder");
 
 // Every 10 minutes
 const CRON_TIME_IST = "*/10 * * * *";
 
-// Schedule both jobs sequentially with timezone set to Asia/Kolkata
 cron.schedule(
   CRON_TIME_IST,
   async () => {
@@ -24,11 +22,3 @@ cron.schedule(
     timezone: "Asia/Kolkata",
   }
 );
-
-// Optional: immediately run both jobs when starting the script (for testing)
-(async () => {
-  console.log("===== Initial Run Started =====");
-  await removePublicFolder();
-  await updateSubscription();
-  console.log("===== Initial Run Finished =====");
-})();
