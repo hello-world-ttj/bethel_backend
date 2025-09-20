@@ -4,6 +4,7 @@ const Subscription = require("../../models/subscriptionModel");
 const validation = require("../../validations");
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
+const moment = require("moment-timezone");
 const path = require("path");
 const User = require("../../models/userModel");
 const { clearCacheByPattern } = require("../../helpers/cacheUtils");
@@ -319,5 +320,54 @@ exports.getSubByUserId = async (req, res) => {
     return responseHandler(res, 200, "Success", sub);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);
+  }
+};
+
+exports.updateExpiry = async (req, res) => {
+  try {
+    const now = moment().tz("Asia/Kolkata");
+    const oneMonthFromNow = moment().tz("Asia/Kolkata").add(1, "month");
+
+    const expiredSubscriptions = await Subscription.find({
+      expiryDate: { $lte: now.toDate() },
+      status: "active",
+    }).select("_id user");
+
+    const expiringSubscriptions = await Subscription.find({
+      expiryDate: {
+        $gte: oneMonthFromNow.startOf("day").toDate(),
+        $lte: oneMonthFromNow.endOf("day").toDate(),
+      },
+      status: "active",
+    }).select("_id user");
+
+    if (expiredSubscriptions.length) {
+      await Subscription.updateMany(
+        { _id: { $in: expiredSubscriptions.map((s) => s._id) } },
+        { $set: { status: "expired" } }
+      );
+      await User.updateMany(
+        { _id: { $in: expiredSubscriptions.map((s) => s.user) } },
+        { $set: { status: "expired" } }
+      );
+    }
+
+    if (expiringSubscriptions.length) {
+      await Subscription.updateMany(
+        { _id: { $in: expiringSubscriptions.map((s) => s._id) } },
+        { $set: { status: "expiring" } }
+      );
+      await User.updateMany(
+        { _id: { $in: expiringSubscriptions.map((s) => s.user) } },
+        { $set: { status: "expiring" } }
+      );
+    }
+
+    return responseHandler(res, 200, "Success", {
+      expiredUpdated: expiredSubscriptions.length,
+      expiringUpdated: expiringSubscriptions.length,
+    });
+  } catch (error) {
+    return responseHandler(res, 500, `Internal Server Error: ${error.message}`);
   }
 };
