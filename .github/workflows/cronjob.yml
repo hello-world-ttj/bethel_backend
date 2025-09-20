@@ -21,6 +21,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # ✅ Create .env file from GitHub Secrets
+      - name: Create env file
+        run: |
+          echo "MONGO_URL=${{ secrets.MONGO_URL }}" >> .env
+
       - name: Run Expiration Script
         run: |
           echo "===== Expiration Script Started ====="

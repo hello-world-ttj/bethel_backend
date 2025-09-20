@@ -1,12 +1,18 @@
+require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
 const moment = require("moment-timezone");
 
-// Always point to project root's public folder
-const publicFolderPath = path.join(process.cwd(), "public");
+// Resolve from GitHub Actions workspace (repo root)
+const publicFolderPath = path.join(
+  process.env.GITHUB_WORKSPACE || process.cwd(),
+  "../public"
+);
 
 const removePublicFolder = async () => {
   try {
+    console.log("Resolved public folder path:", publicFolderPath);
+
     if (!fs.existsSync(publicFolderPath)) {
       console.log(`Folder does not exist: ${publicFolderPath}`);
       return;
