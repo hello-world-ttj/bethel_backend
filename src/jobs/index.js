@@ -5,8 +5,8 @@ const cron = require("node-cron");
 const updateSubscription = require("./updateSubscription");
 const removePublicFolder = require("./removePublicFolder");
 
-// 11:35 PM IST daily
-const CRON_TIME_IST = "35 23 * * *"; // 23:35 IST
+// Every 10 minutes
+const CRON_TIME_IST = "*/10 * * * *";
 
 // Schedule both jobs sequentially with timezone set to Asia/Kolkata
 cron.schedule(
