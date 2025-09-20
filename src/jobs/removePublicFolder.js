@@ -2,8 +2,8 @@ const fs = require("fs");
 const path = require("path");
 const moment = require("moment-timezone");
 
-// Adjust path to point to project root public folder
-const publicFolderPath = path.join(__dirname, "../public");
+// Always point to project root's public folder
+const publicFolderPath = path.join(process.cwd(), "public");
 
 const removePublicFolder = async () => {
   try {

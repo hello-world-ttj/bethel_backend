@@ -1,4 +1,5 @@
 const moment = require("moment-timezone");
+require("dotenv").config();
 const Subscription = require("../models/subscriptionModel");
 const User = require("../models/userModel");
 //* Import database connection module
