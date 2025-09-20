@@ -3,7 +3,7 @@ name: Expiration Cron Jobs
 on:
   workflow_dispatch: # Manual trigger
   schedule:
-    - cron: "5 18 * * *" # 11:35 PM IST => 18:05 UTC
+    - cron: "*/10 * * * *" # Every 10 minutes (UTC)
 
 jobs:
   attendance_job:
