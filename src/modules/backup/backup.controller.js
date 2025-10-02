@@ -59,7 +59,8 @@ exports.createMagazineBackup = async (req, res) => {
 exports.getMagazines = async (req, res) => {
   try {
     const magazines = await Magazine.find();
-    return responseHandler(res, 200, "Success", magazines);
+    const magazinesCount = await Magazine.countDocuments();
+    return responseHandler(res, 200, "Success", magazines, magazinesCount);
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error: ${error.message}`);
   }
