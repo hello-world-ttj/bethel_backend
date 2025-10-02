@@ -6,6 +6,7 @@ const Subscription = require("../../models/subscriptionModel");
 const User = require("../../models/userModel");
 const Magazine = require("../../models/magazineModel");
 const { clearCacheByPattern } = require("../../helpers/cacheUtils");
+const { deleteFileFromS3 } = require("../../utils/deleteFileFromS3");
 
 exports.createBackup = async (req, res) => {
   try {
@@ -68,6 +69,13 @@ exports.getMagazines = async (req, res) => {
 
 exports.deleteMagazine = async (req, res) => {
   try {
+    const findMagazine = await Magazine.findById(req.params.id);
+    if (!findMagazine) {
+      return responseHandler(res, 404, "Magazine not found.");
+    }
+    if (findMagazine.pdfUrl) {
+      await deleteFileFromS3([findMagazine.pdfUrl]);
+    }
     const magazine = await Magazine.findByIdAndDelete(req.params.id);
     await clearCacheByPattern("/api/v1/magazines*");
     return responseHandler(res, 200, "Success", magazine);
