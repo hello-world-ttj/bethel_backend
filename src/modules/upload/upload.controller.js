@@ -2,6 +2,7 @@ const sharp = require("sharp");
 const fs = require("fs");
 const path = require("path");
 const responseHandler = require("../../helpers/responseHandler");
+const { uploadFileToS3 } = require("../../utils/s3Uploader");
 
 exports.uploadFile = async (req, res) => {
   try {
@@ -27,6 +28,23 @@ exports.uploadFile = async (req, res) => {
       200,
       "File uploaded and compressed successfully",
       outputFilename
+    );
+  } catch (error) {
+    return responseHandler(res, 500, `Internal Server Error ${error.message}`);
+  }
+};
+
+exports.uploadToS3 = async (req, res) => {
+  try {
+    if (!req.file) {
+      return responseHandler(res, 400, "Image is required");
+    }
+    const fileUrl = await uploadFileToS3(req.file);
+    return responseHandler(
+      res,
+      200,
+      "File uploaded to S3 successfully",
+      fileUrl
     );
   } catch (error) {
     return responseHandler(res, 500, `Internal Server Error ${error.message}`);

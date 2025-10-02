@@ -1,7 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const router = express.Router();
-const { uploadFile } = require("./upload.controller");
+const { uploadFile, uploadToS3 } = require("./upload.controller");
 const authVerify = require("../../middlewares/authVerify");
 const uploadDir = "/home/ubuntu/church";
 //! Set up multer storage configuration
@@ -22,7 +22,10 @@ const upload = multer({
   },
 });
 
+const s3Upload = multer();
+
 router.use(authVerify);
 router.post("/", upload.single("file"), uploadFile);
+router.post("/s3", s3Upload.single("pdf"), uploadToS3);
 
 module.exports = router;

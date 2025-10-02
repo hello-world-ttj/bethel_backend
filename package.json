@@ -19,6 +19,8 @@
   "homepage": "https://github.com/hello-world-ttj/bethel_backend#readme",
   "description": "",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.901.0",
+    "@aws-sdk/lib-storage": "^3.901.0",
     "archiver": "^7.0.1",
     "bcrypt": "^5.1.1",
     "cli-color": "^2.0.4",
